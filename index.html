@@ -6,7 +6,7 @@
   <meta name="description" content="Transform any photo into a professional corporate headshot for free. AI-powered — no API key required." />
   <meta property="og:title" content="HeadshotAI — Free Professional Headshots" />
   <meta property="og:description" content="Generate professional LinkedIn, resume, and passport headshots free with AI." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.hf.space; connect-src 'self' https://timbrooks-instruct-pix2pix.hf.space;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.replicate.delivery https://replicate.delivery; connect-src 'self' https://api.replicate.com;" />
   <title>HeadshotAI — Free Professional Headshots</title>
   <style>
     /* === CUSTOM PROPERTIES === */
@@ -90,6 +90,21 @@
     .mode-pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:var(--radius-full);border:1px solid}
     .mode-pill.pollinations{color:#a78bfa;background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.25)}
     .mode-pill.face-preserve{color:#4ade80;background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25)}
+    .mode-pill.needs-key{color:#f59e0b;background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.25)}
+
+    /* === TOKEN MODAL === */
+    #token-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;padding:24px}
+    .modal-card{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:40px 36px;max-width:520px;width:100%;box-shadow:var(--shadow-lg)}
+    .modal-icon{font-size:2.5rem;margin-bottom:16px}
+    .modal-title{font-size:1.375rem;font-weight:800;margin-bottom:8px}
+    .modal-desc{font-size:.9rem;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
+    .modal-steps{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:16px 20px;margin-bottom:20px;font-size:.85rem;color:var(--text-secondary);line-height:1.9}
+    .modal-steps a{color:var(--accent-purple-light);text-decoration:underline}
+    .modal-input-row{display:flex;gap:8px;margin-bottom:16px}
+    #token-input{flex:1;background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:10px 14px;color:var(--text-primary);font-size:.9rem;font-family:monospace;outline:none;transition:border-color var(--transition-base)}
+    #token-input:focus{border-color:var(--accent-purple)}
+    .modal-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .modal-note{font-size:.75rem;color:var(--text-muted);margin-top:12px;line-height:1.5}
 
     /* === NAV === */
     #nav{position:fixed;top:0;left:0;right:0;z-index:var(--z-sticky);padding:16px 0;transition:all var(--transition-base)}
@@ -364,7 +379,7 @@
       </p>
       <div class="hero-badges">
         <span class="free-badge"><span class="dot"></span>100% Free · No API Key Required</span>
-        <span class="free-badge" style="color:#4ade80;background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25)"><span class="dot" style="background:#4ade80"></span>🧬 Face-Preserving AI · Your Face Stays You</span>
+        <span class="free-badge" style="color:#4ade80;background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25)"><span class="dot" style="background:#4ade80"></span>🧬 Face-Preserving · Powered by Replicate</span>
       </div>
       <div class="hero-cta-group">
         <a href="#upload-section" class="btn btn-primary btn-lg">✨ Generate Free Headshot</a>
@@ -412,10 +427,10 @@
       <div class="provider-info-row">
         <div class="provider-option">
           <div class="provider-option-header">
-            <span class="mode-pill face-preserve">🧬 InstructPix2Pix · Face-Preserving</span>
-            <strong>Completely Free · No Account Needed</strong>
+            <span class="mode-pill face-preserve">🧬 Replicate · InstructPix2Pix</span>
+            <strong>Free Account · No Credit Card</strong>
           </div>
-          <p>Your photo is sent to the <strong>timbrooks/instruct-pix2pix</strong> public HuggingFace Space. This model edits your actual photo — changing your attire and background based on an instruction like "wear a navy suit" — while preserving your face geometry and identity. No API key required.</p>
+          <p>Uses <a href="https://replicate.com" target="_blank" rel="noopener" style="color:var(--accent-purple-light)">Replicate</a>'s hosted <strong>timbrooks/instruct-pix2pix</strong> model. Your photo is edited based on an instruction ("wear a navy suit") while your face is fully preserved. Sign up free at replicate.com — takes 30 seconds.</p>
         </div>
       </div>
     </div>
@@ -512,7 +527,10 @@
     <div class="transform-area will-reveal">
       <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Free Headshot</button>
       <div class="transform-mode-row">
-        <span class="mode-pill face-preserve" id="mode-pill-dynamic">🧬 Face-Preserving AI · Upload a photo first</span>
+        <span class="mode-pill needs-key" id="mode-pill-dynamic">🔑 Add Replicate token to get started</span>
+        <button class="btn btn-ghost btn-sm" onclick="openTokenModal()" id="token-settings-btn">⚙ API Token</button>
+      </div>
+      <div style="margin-top:8px">
         <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Upload a photo &amp; select a style</span>
       </div>
     </div>
@@ -596,7 +614,7 @@
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-question">Is this really free?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Yes, completely free. The app uses the public <a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix HuggingFace Space</a> — no account, no API key, no credit card required. There are no hidden fees or limits.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">The app uses <a href="https://replicate.com" target="_blank" rel="noopener">Replicate</a>, which requires a free account. Signing up at replicate.com takes 30 seconds and gives you free credits — no credit card required. Your API token is stored in your browser only.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How does it generate a headshot without my API key?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
@@ -604,7 +622,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-question">Will the generated headshot look like me?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Yes — when you upload a photo, the app uses <strong>face-preserving image-to-image AI</strong> (InstructPix2Pix via a free HuggingFace Space) that edits your actual photo to apply professional attire and background while keeping your face intact. No token or account required.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes — the app uses <strong>InstructPix2Pix via Replicate</strong>. It edits your actual uploaded photo to apply professional attire and background while keeping your face, expression, and identity fully intact.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How does face preservation work?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
@@ -612,7 +630,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-question">Is my photo stored or shared?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Your compressed photo is sent directly to the HuggingFace public Space for inference — it is not stored on any server we control. Generated thumbnails are saved in your browser's localStorage only. This is a fully static, serverless app with no database or backend.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Your photo is sent to <a href="https://replicate.com" target="_blank" rel="noopener">Replicate</a> for AI processing. Your API token is stored in your browser's localStorage only and sent directly to Replicate — it never passes through any server we control. This is a fully static, serverless app with no database.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How long does generation take?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
@@ -646,18 +664,41 @@
       <div class="footer-col">
         <h4>Powered By</h4>
         <ul>
-          <li><a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix</a></li>
-          <li><a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace Spaces</a></li>
+          <li><a href="https://replicate.com" target="_blank" rel="noopener">Replicate</a></li>
+          <li><a href="https://replicate.com/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix model</a></li>
           <li><a href="https://github.com/mikeolofernes/photogenerator" target="_blank" rel="noopener">GitHub (source)</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© 2025 HeadshotAI. Open-source, forever free.</p>
-      <p>Powered by <a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix</a> via HuggingFace Spaces</p>
+      <p>Powered by <a href="https://replicate.com/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix</a> via Replicate</p>
     </div>
   </div>
 </footer>
+
+<!-- Replicate Token Modal -->
+<div id="token-modal" hidden>
+  <div class="modal-card">
+    <div class="modal-icon">🔑</div>
+    <h2 class="modal-title">Add Your Free Replicate Token</h2>
+    <p class="modal-desc">Replicate runs the face-preserving AI model. A free account gives you enough credits to generate headshots — no credit card required.</p>
+    <div class="modal-steps">
+      1. Go to <a href="https://replicate.com/signin" target="_blank" rel="noopener">replicate.com</a> → sign up free<br>
+      2. Visit <a href="https://replicate.com/account/api-tokens" target="_blank" rel="noopener">replicate.com/account/api-tokens</a><br>
+      3. Click <strong>Create token</strong> → copy it → paste below
+    </div>
+    <div class="modal-input-row">
+      <input type="password" id="token-input" placeholder="r8_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+      <button class="btn btn-primary" id="save-token-btn">Save</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="clear-token-btn">Remove saved token</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeTokenModal()">Cancel</button>
+    </div>
+    <p class="modal-note">Your token is stored in your browser only and sent directly to Replicate. It never touches our servers — this is a fully static app.</p>
+  </div>
+</div>
 
 <!-- Toast container -->
 <div id="toast-container" aria-live="polite"></div>
@@ -669,12 +710,14 @@
 // =============================================
 // CONFIG
 // =============================================
-const SPACE_URL     = 'https://timbrooks-instruct-pix2pix.hf.space';
-const MAX_HISTORY   = 10;
-const MAX_IMG_DIM   = 512;   // InstructPix2Pix is trained on 512×512
-const JPEG_QUALITY  = 0.88;
-const THUMB_SIZE    = 240;
-const THUMB_QUALITY = 0.72;
+const REPLICATE_API   = 'https://api.replicate.com/v1/predictions';
+const REPLICATE_MODEL = 'timbrooks/instruct-pix2pix:30c1d0b916a6f8efce20493f5d61ee27491ab2a60437c13c588468b9810ec23d';
+const TOKEN_KEY       = 'replicate_token';
+const MAX_HISTORY     = 10;
+const MAX_IMG_DIM     = 768;
+const JPEG_QUALITY    = 0.88;
+const THUMB_SIZE      = 240;
+const THUMB_QUALITY   = 0.72;
 
 // =============================================
 // PRESETS
@@ -897,138 +940,150 @@ function selectPreset(key) {
 }
 
 function updateTransformBtn() {
-  const btn  = $id('transform-btn');
-  const hint = $id('transform-hint');
+  updateModePill();
+}
+
+// =============================================
+// TOKEN MANAGEMENT
+// =============================================
+function getToken()    { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveToken(t)  { localStorage.setItem(TOKEN_KEY, t); }
+function clearToken()  { localStorage.removeItem(TOKEN_KEY); }
+
+function openTokenModal() {
+  const existing = getToken();
+  if (existing) $id('token-input').value = existing;
+  show($id('token-modal'));
+  setTimeout(() => $id('token-input').focus(), 80);
+}
+function closeTokenModal() {
+  hide($id('token-modal'));
+  $id('token-input').value = '';
+}
+
+function initTokenModal() {
+  $id('save-token-btn').addEventListener('click', () => {
+    const val = $id('token-input').value.trim();
+    if (!val || val.length < 8) { showToast('Paste a valid Replicate token.', 'warning'); return; }
+    saveToken(val);
+    updateModePill();
+    showToast('Token saved! You can now generate headshots.', 'success');
+    closeTokenModal();
+  });
+  $id('clear-token-btn').addEventListener('click', () => {
+    clearToken();
+    updateModePill();
+    showToast('Token removed.', 'info');
+    closeTokenModal();
+  });
+  $id('token-modal').addEventListener('click', e => { if (e.target === $id('token-modal')) closeTokenModal(); });
+  $id('token-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $id('save-token-btn').click();
+    if (e.key === 'Escape') closeTokenModal();
+  });
+}
+
+function updateModePill() {
   const pill = $id('mode-pill-dynamic');
-  const ready = state.compressedDataUrl && state.selectedPreset;
+  const hint = $id('transform-hint');
+  if (!pill) return;
+  const hasToken = !!getToken();
+  const hasPhoto = !!state.compressedDataUrl;
+  const hasPreset = !!state.selectedPreset;
 
-  btn.disabled = false;
-  if (!state.compressedDataUrl) {
-    hint.textContent = 'Upload a photo first ↑';
-  } else if (!state.selectedPreset) {
-    hint.textContent = 'Now select a style above';
+  if (!hasToken) {
+    pill.textContent = '🔑 Add free Replicate token to get started';
+    pill.className = 'mode-pill needs-key';
+  } else if (!hasPhoto) {
+    pill.textContent = '🧬 Face-Preserving AI · Upload a photo';
+    pill.className = 'mode-pill face-preserve';
   } else {
-    hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}" · Ready!`;
-  }
-
-  if (pill) {
-    pill.textContent = state.compressedDataUrl
-      ? '🧬 Face-Preserving AI · Your face will be kept'
-      : '🧬 Face-Preserving AI · Upload a photo to begin';
+    pill.textContent = '🧬 Face-Preserving AI · Ready';
     pill.className = 'mode-pill face-preserve';
   }
+
+  if (hint) {
+    if (!hasToken)        hint.textContent = 'Click "⚙ API Token" above to add your free Replicate token';
+    else if (!hasPhoto)   hint.textContent = 'Upload a photo first ↑';
+    else if (!hasPreset)  hint.textContent = 'Now select a style above';
+    else                  hint.textContent = `Style: "${PRESETS[hasPreset ? state.selectedPreset : '']?.name}" · Ready!`;
+  }
 }
 
 // =============================================
-// AI GENERATION — InstructPix2Pix (face-preserving, free, no key)
+// AI GENERATION — Replicate InstructPix2Pix
 // =============================================
+async function callReplicate(dataUrl, preset) {
+  const token = getToken();
+  if (!token) throw new Error('No Replicate token set.');
 
-// Compress a data URL to a smaller size specifically for the AI model
-function resizeDataUrl(dataUrl, maxDim = 512) {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => {
-      let { width, height } = img;
-      if (width > maxDim || height > maxDim) {
-        const r = Math.min(maxDim / width, maxDim / height);
-        width = Math.round(width * r); height = Math.round(height * r);
-      }
-      const c = document.createElement('canvas');
-      c.width = width; c.height = height;
-      const ctx = c.getContext('2d');
-      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(c.toDataURL('image/jpeg', 0.88));
-    };
-    img.onerror = () => resolve(dataUrl);
-    img.src = dataUrl;
-  });
-}
+  updateProgress(15, 'Submitting to Replicate…');
 
-async function uploadToSpace(dataUrl) {
-  const r = await fetch(dataUrl);
-  const blob = await r.blob();
-  const form = new FormData();
-  form.append('files', blob, 'photo.jpg');
-  const up = await fetch(`${SPACE_URL}/upload`, { method: 'POST', body: form });
-  if (!up.ok) throw new Error(`Upload failed (${up.status})`);
-  const paths = await up.json();
-  if (!paths?.[0]) throw new Error('No upload path returned');
-  return paths[0];
-}
-
-async function callGradioSpace(dataUrl, preset, attempt = 0) {
-  const seed = Math.floor(Math.random() * 99999);
-  const instruction = preset.instruct;
-
-  // Approach 1: pass base64 data URL directly (Gradio 3.x style)
-  updateProgress(15, 'Sending photo to AI…');
-  let resp = await fetch(`${SPACE_URL}/api/predict`, {
+  const createResp = await fetch(REPLICATE_API, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ fn_index: 0, data: [dataUrl, instruction, 20, 7.5, 1.5, seed] }),
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      version: REPLICATE_MODEL.split(':')[1],
+      input: {
+        image: dataUrl,
+        prompt: preset.instruct,
+        num_inference_steps: 20,
+        image_guidance_scale: 1.5,
+        guidance_scale: 7.5,
+      },
+    }),
   });
 
-  // Approach 2: file upload then predict (Gradio 4.x style)
-  if (resp.status === 422 || resp.status === 415 || resp.status === 400) {
-    updateProgress(20, 'Uploading photo…');
-    const filePath = await uploadToSpace(dataUrl);
-    updateProgress(30, 'Processing…');
-    resp = await fetch(`${SPACE_URL}/api/predict`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fn_index: 0,
-        data: [
-          { path: filePath, mime_type: 'image/jpeg', orig_name: 'photo.jpg', meta: { _type: 'gradio.FileData' } },
-          instruction, 20, 7.5, 1.5, seed,
-        ],
-      }),
-    });
+  if (createResp.status === 401) {
+    clearToken();
+    updateModePill();
+    throw Object.assign(new Error('Invalid Replicate token. Please check and re-enter it.'), { needsToken: true });
+  }
+  if (!createResp.ok) {
+    const body = await createResp.json().catch(() => ({}));
+    throw new Error(body.detail || `Replicate error (${createResp.status}). Please try again.`);
   }
 
-  // Space sleeping / overloaded — retry
-  if (resp.status === 503 || resp.status === 500) {
-    if (attempt >= 3) throw new Error('The AI model is taking too long to respond. Please try again in a minute.');
-    updateProgress(null, `AI model warming up… retry ${attempt + 1}/3`);
-    await sleep(15000);
-    return callGradioSpace(dataUrl, preset, attempt + 1);
-  }
+  const prediction = await createResp.json();
+  updateProgress(25, 'Processing your photo…');
 
-  if (!resp.ok) {
-    const body = await resp.text().catch(() => '');
-    throw new Error(`AI error (${resp.status}). ${body ? body.slice(0, 120) : 'Please try again.'}`);
-  }
-
-  const result = await resp.json();
-  if (result.error) throw new Error(result.error);
-
-  updateProgress(85, 'Finalizing your headshot…');
-  const out = result.data?.[0];
-  if (!out) throw new Error('AI returned no image. Please try again.');
-
-  return resolveGradioOutput(out);
+  // Poll for completion
+  return pollPrediction(prediction.urls.get, token);
 }
 
-async function resolveGradioOutput(output) {
-  if (typeof output === 'string') {
-    if (output.startsWith('data:')) return output;
-    const url = output.startsWith('/') ? `${SPACE_URL}${output}` : output;
-    const r = await fetch(url);
-    if (!r.ok) throw new Error('Could not retrieve the generated image.');
-    return URL.createObjectURL(await r.blob());
+async function pollPrediction(pollUrl, token, attempt = 0) {
+  if (attempt > 60) throw new Error('Generation timed out. Please try again.');
+
+  await sleep(attempt < 3 ? 1500 : 2500);
+
+  const resp = await fetch(pollUrl, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  });
+  if (!resp.ok) throw new Error(`Poll error (${resp.status})`);
+
+  const data = await resp.json();
+
+  if (data.status === 'failed' || data.error) {
+    throw new Error(data.error || 'Generation failed on Replicate. Please try again.');
   }
-  if (output && typeof output === 'object') {
-    if (output.data) return output.data;
-    const raw = output.url || output.path || output.name;
-    if (raw) {
-      const url = raw.startsWith('/') ? `${SPACE_URL}${raw}` : raw;
-      const r = await fetch(url);
-      if (!r.ok) throw new Error('Could not retrieve the generated image.');
-      return URL.createObjectURL(await r.blob());
-    }
+
+  if (data.status === 'succeeded') {
+    updateProgress(88, 'Finalizing your headshot…');
+    const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
+    if (!outputUrl) throw new Error('No image in response. Please try again.');
+    return outputUrl;
   }
-  throw new Error('Unexpected response format from AI. Please try again.');
+
+  // Still processing — update progress naturally
+  const pct = Math.min(85, 25 + attempt * 2);
+  const labels = ['Analyzing your face…', 'Preserving facial features…', 'Applying professional style…', 'Enhancing lighting…', 'Adding finishing touches…'];
+  updateProgress(pct, labels[Math.min(attempt >> 2, labels.length - 1)]);
+  setStepActive(attempt < 4 ? 1 : attempt < 10 ? 2 : 3);
+
+  return pollPrediction(pollUrl, token, attempt + 1);
 }
 
 // =============================================
@@ -1037,8 +1092,12 @@ async function resolveGradioOutput(output) {
 function initTransformBtn() {
   $id('transform-btn').addEventListener('click', () => {
     if (state.isGenerating) return;
+    if (!getToken()) {
+      openTokenModal();
+      return;
+    }
     if (!state.compressedDataUrl) {
-      showToast('Please upload a photo first — your face needs to be in the photo!', 'warning');
+      showToast('Please upload a photo first!', 'warning');
       $id('upload-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
@@ -1053,7 +1112,7 @@ function initTransformBtn() {
 }
 
 async function generateHeadshot() {
-  if (state.isGenerating || !state.selectedPreset || !state.compressedDataUrl) return;
+  if (state.isGenerating || !state.selectedPreset || !state.compressedDataUrl || !getToken()) return;
 
   state.isGenerating = true;
   const t0     = Date.now();
@@ -1067,9 +1126,7 @@ async function generateHeadshot() {
   startFakeProgress();
 
   try {
-    // Resize to 512px for InstructPix2Pix
-    const aiDataUrl = await resizeDataUrl(state.compressedDataUrl, 512);
-    const outputUrl = await callGradioSpace(aiDataUrl, preset);
+    const outputUrl = await callReplicate(state.compressedDataUrl, preset);
     clearProgressTimers();
     updateProgress(100, 'Complete! ✨');
     await sleep(300);
@@ -1077,6 +1134,7 @@ async function generateHeadshot() {
   } catch (err) {
     clearProgressTimers();
     handleError(err);
+    if (err.needsToken) setTimeout(() => openTokenModal(), 600);
   } finally {
     state.isGenerating = false;
   }
@@ -1134,7 +1192,7 @@ async function handleSuccess(outputUrl, elapsed) {
 
   await new Promise(resolve => {
     const img = $id('after-img');
-    if (img.complete) { resolve(); return; }
+    if (img.complete && img.naturalWidth) { resolve(); return; }
     img.onload = resolve; img.onerror = resolve;
   });
 
@@ -1143,7 +1201,7 @@ async function handleSuccess(outputUrl, elapsed) {
   show($id('result-display'));
 
   const secs = (elapsed / 1000).toFixed(1);
-  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · Face-Preserving AI · ${secs}s`;
+  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · Replicate · ${secs}s`;
 
   await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed });
   renderHistory(loadHistory());
@@ -1200,9 +1258,12 @@ function initDownloadBtn() {
 
 async function downloadImage(url, filename) {
   try {
-    // blob: URLs (from URL.createObjectURL) can be downloaded directly
-    const a = Object.assign(document.createElement('a'), { href: url, download: filename });
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = Object.assign(document.createElement('a'), { href: blobUrl, download: filename });
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
     showToast('Download started!', 'success');
   } catch {
     showToast('Right-click the image and choose "Save image as…"', 'info', 6000);
@@ -1358,8 +1419,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initDownloadBtn();
   initHistory();
   initFaq();
+  initTokenModal();
   initScrollReveal();
-  updateTransformBtn();
+  updateModePill();
 });
 </script>
 </body>
