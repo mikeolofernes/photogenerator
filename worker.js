@@ -1,54 +1,63 @@
 /**
- * HeadshotAI — Cloudflare Worker CORS Proxy
- *
- * Deploy this to Cloudflare Workers (free tier) to allow the static
- * GitHub Pages app to call the Replicate API from the browser.
- *
- * Steps:
- *  1. Go to https://workers.cloudflare.com → sign up free
- *  2. Create Worker → paste this entire file → Deploy
- *  3. Copy the Worker URL (e.g. https://headshot-proxy.yourname.workers.dev)
- *  4. Paste it into the app's Settings modal
+ * HeadshotAI — Cloudflare Worker CORS Proxy for Replicate API
+ * Deploy to Cloudflare Workers free tier (workers.cloudflare.com)
  */
+
+const CORS = {
+  'Access-Control-Allow-Origin':  '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age':       '86400',
+};
 
 export default {
   async fetch(request) {
-    // CORS preflight
+    // Always handle preflight first — must return CORS headers immediately
     if (request.method === 'OPTIONS') {
-      return corsResponse(null, 204);
+      return new Response(null, { status: 204, headers: CORS });
     }
 
     const url  = new URL(request.url);
     const path = url.pathname + url.search;
 
-    // Only proxy Replicate prediction endpoints
     if (!path.startsWith('/v1/predictions')) {
-      return corsResponse(JSON.stringify({ error: 'Only /v1/predictions is proxied.' }), 400, {
-        'Content-Type': 'application/json',
+      return new Response(JSON.stringify({ error: 'Only /v1/predictions is proxied.' }), {
+        status: 404,
+        headers: { ...CORS, 'Content-Type': 'application/json' },
       });
     }
 
-    const target = 'https://api.replicate.com' + path;
+    try {
+      // Build clean forwarded headers (drop Host to avoid conflicts)
+      const fwdHeaders = new Headers();
+      for (const [k, v] of request.headers.entries()) {
+        if (k.toLowerCase() !== 'host') fwdHeaders.set(k, v);
+      }
 
-    const proxyResp = await fetch(target, {
-      method:  request.method,
-      headers: request.headers,
-      body:    request.method === 'GET' ? undefined : request.body,
-    });
+      const proxyResp = await fetch('https://api.replicate.com' + path, {
+        method:  request.method,
+        headers: fwdHeaders,
+        body:    request.method === 'GET' ? undefined : request.body,
+      });
 
-    const respHeaders = Object.fromEntries(proxyResp.headers);
-    return corsResponse(proxyResp.body, proxyResp.status, respHeaders);
+      // Copy Replicate response headers then add CORS on top
+      const outHeaders = new Headers();
+      for (const [k, v] of proxyResp.headers.entries()) {
+        outHeaders.set(k, v);
+      }
+      for (const [k, v] of Object.entries(CORS)) {
+        outHeaders.set(k, v);
+      }
+
+      return new Response(proxyResp.body, {
+        status:  proxyResp.status,
+        headers: outHeaders,
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ error: err.message }), {
+        status:  502,
+        headers: { ...CORS, 'Content-Type': 'application/json' },
+      });
+    }
   },
 };
-
-function corsResponse(body, status, extraHeaders = {}) {
-  return new Response(body, {
-    status,
-    headers: {
-      ...extraHeaders,
-      'Access-Control-Allow-Origin':  '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
-}
