@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Transform any selfie into a professional corporate headshot in seconds. AI-powered headshot generator for LinkedIn, resume, and passport photos." />
-  <meta property="og:title" content="HeadshotAI — Professional Headshots in Seconds" />
-  <meta property="og:description" content="Transform any selfie into a professional corporate headshot powered by AI." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.fal.run https://*.fal-cdn.com https://fal.media https://storage.googleapis.com https://v3.fal.media; connect-src 'self' https://fal.run https://*.fal.run;" />
-  <title>HeadshotAI — Professional Headshots in Seconds</title>
+  <meta name="description" content="Transform any photo into a professional corporate headshot for free. AI-powered — no API key required." />
+  <meta property="og:title" content="HeadshotAI — Free Professional Headshots" />
+  <meta property="og:description" content="Generate professional LinkedIn, resume, and passport headshots free with AI." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://image.pollinations.ai https://*.huggingface.co; connect-src 'self' https://image.pollinations.ai https://api-inference.huggingface.co;" />
+  <title>HeadshotAI — Free Professional Headshots</title>
   <style>
     /* === CUSTOM PROPERTIES === */
     :root {
@@ -22,6 +22,7 @@
       --accent-purple-glow: rgba(124,58,237,0.3);
       --accent-gold: #f59e0b;
       --accent-gold-light: #fbbf24;
+      --accent-green: #22c55e;
       --gradient-primary: linear-gradient(135deg,#7c3aed 0%,#f59e0b 100%);
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
@@ -81,6 +82,15 @@
     .btn-lg{padding:16px 40px;font-size:1.0625rem}
     .btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
 
+    /* === FREE BADGE === */
+    .free-badge{display:inline-flex;align-items:center;gap:6px;font-size:.8125rem;font-weight:700;color:var(--accent-green);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);padding:4px 12px;border-radius:var(--radius-full)}
+    .free-badge .dot{width:6px;height:6px;background:var(--accent-green);border-radius:50%;animation:pulse 2s ease infinite}
+
+    /* === MODE PILL === */
+    .mode-pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:var(--radius-full);border:1px solid}
+    .mode-pill.pollinations{color:#a78bfa;background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.25)}
+    .mode-pill.huggingface{color:#fb923c;background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25)}
+
     /* === NAV === */
     #nav{position:fixed;top:0;left:0;right:0;z-index:var(--z-sticky);padding:16px 0;transition:all var(--transition-base)}
     #nav.scrolled{background:rgba(10,10,15,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px 0}
@@ -93,30 +103,38 @@
     .nav-actions{display:flex;align-items:center;gap:12px}
     .nav-hamburger{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
     .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text-primary);border-radius:2px}
-    .nav-mobile-menu{display:none;position:fixed;inset:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);z-index:calc(var(--z-sticky) + 1);flex-direction:column;align-items:center;justify-content:center;gap:24px}
+    .nav-mobile-menu{display:none;position:fixed;inset:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);z-index:calc(var(--z-sticky)+1);flex-direction:column;align-items:center;justify-content:center;gap:24px}
     .nav-mobile-menu.open{display:flex}
     .nav-mobile-menu a{font-size:1.5rem;font-weight:600}
     .nav-mobile-close{position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-secondary);cursor:pointer;background:none;border:none}
 
     /* === HERO === */
-    #hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(245,158,11,.08) 0%,transparent 50%),linear-gradient(180deg,#0a0a0f 0%,#0f0a1e 50%,#0a0a0f 100%);position:relative;overflow:hidden}
+    #hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(34,197,94,.06) 0%,transparent 50%),linear-gradient(180deg,#0a0a0f 0%,#0f0a1e 50%,#0a0a0f 100%);position:relative;overflow:hidden}
     .hero-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
     .hero-orb-1{width:600px;height:600px;background:rgba(124,58,237,.12);top:-200px;left:-100px;animation:orbFloat 18s ease-in-out infinite}
-    .hero-orb-2{width:500px;height:500px;background:rgba(245,158,11,.08);bottom:-100px;right:-100px;animation:orbFloat 22s ease-in-out infinite reverse}
+    .hero-orb-2{width:500px;height:500px;background:rgba(34,197,94,.06);bottom:-100px;right:-100px;animation:orbFloat 22s ease-in-out infinite reverse}
     .hero-orb-3{width:300px;height:300px;background:rgba(168,85,247,.08);top:40%;right:20%;animation:orbFloat 15s ease-in-out infinite 3s}
     .hero-content{max-width:760px;position:relative;z-index:1}
-    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;font-weight:600;color:var(--accent-gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:2px 12px;border-radius:var(--radius-full);margin-bottom:24px}
-    .hero-badge .dot{width:6px;height:6px;background:var(--accent-gold);border-radius:50%;animation:pulse 2s ease infinite}
     #hero h1{font-size:clamp(2.5rem,7vw,4.5rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:24px}
-    #hero p.hero-subtitle{font-size:clamp(1rem,2.5vw,1.25rem);color:var(--text-secondary);max-width:520px;margin-bottom:32px;line-height:1.7}
-    .hero-cta-group{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:48px}
+    #hero p.hero-subtitle{font-size:clamp(1rem,2.5vw,1.25rem);color:var(--text-secondary);max-width:540px;margin-bottom:32px;line-height:1.7}
+    .hero-cta-group{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:40px}
+    .hero-badges{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
     .hero-stats{display:flex;gap:32px;flex-wrap:wrap}
     .hero-stat{display:flex;flex-direction:column}
     .hero-stat-value{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .hero-stat-label{font-size:.8125rem;color:var(--text-muted)}
 
+    /* === HOW IT WORKS === */
+    #how-section{background:var(--bg-secondary)}
+    .how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .how-card{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:28px 24px;text-align:center}
+    .how-step{width:40px;height:40px;background:var(--gradient-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.875rem;font-weight:800;color:#fff;margin:0 auto 16px}
+    .how-icon{font-size:2rem;margin-bottom:12px}
+    .how-title{font-size:1rem;font-weight:700;margin-bottom:8px}
+    .how-desc{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+
     /* === UPLOAD === */
-    #upload-section{background:var(--bg-secondary)}
+    #upload-section{background:var(--bg-primary)}
     .upload-card{max-width:700px;margin:0 auto;padding:32px}
     #drop-zone{border:2px dashed rgba(255,255,255,.15);border-radius:var(--radius-lg);padding:48px 32px;text-align:center;cursor:pointer;transition:all var(--transition-base)}
     #drop-zone:hover,#drop-zone.dragover{border-color:var(--accent-purple);background:rgba(124,58,237,.06)}
@@ -126,7 +144,7 @@
     .drop-zone-subtitle{font-size:.875rem;color:var(--text-secondary);margin-bottom:20px}
     .drop-zone-formats{font-size:.75rem;color:var(--text-muted);margin-top:16px}
     .preview-image-wrap{position:relative;overflow:hidden;border-radius:var(--radius-lg)}
-    .preview-image-wrap img{width:100%;height:360px;object-fit:cover;border-radius:var(--radius-lg)}
+    .preview-image-wrap img{width:100%;height:320px;object-fit:cover;border-radius:var(--radius-lg)}
     .preview-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 50%);border-radius:var(--radius-lg)}
     .preview-meta{display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;gap:16px;flex-wrap:wrap}
     .preview-filename{font-size:.9rem;font-weight:600}
@@ -138,7 +156,7 @@
     .upload-tip-desc{font-size:.75rem;color:var(--text-secondary)}
 
     /* === PRESETS === */
-    #presets-section{background:var(--bg-primary)}
+    #presets-section{background:var(--bg-secondary)}
     .presets-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:32px}
     .preset-card{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:20px 16px;cursor:pointer;transition:all var(--transition-base);text-align:center;position:relative;overflow:hidden}
     .preset-card:hover{border-color:var(--accent-purple-light);background:rgba(124,58,237,.08);transform:translateY(-2px);box-shadow:var(--shadow-md)}
@@ -147,11 +165,12 @@
     .preset-icon{font-size:2rem;margin-bottom:12px;display:block}
     .preset-name{font-size:.875rem;font-weight:700;margin-bottom:4px}
     .preset-desc{font-size:.75rem;color:var(--text-secondary);line-height:1.4}
-    .transform-btn-wrap{text-align:center}
+    .transform-area{text-align:center}
     #transform-btn{font-size:1.0625rem;padding:16px 40px}
+    .transform-mode-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;flex-wrap:wrap}
 
     /* === RESULT === */
-    #result-section{background:var(--bg-secondary)}
+    #result-section{background:var(--bg-primary)}
     #loading-state{max-width:480px;margin:0 auto;text-align:center;padding:64px 0}
     .spinner-ring{width:72px;height:72px;border:3px solid var(--surface-2);border-top-color:var(--accent-purple);border-right-color:var(--accent-gold);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 24px}
     .loading-title{font-size:1.375rem;font-weight:700;margin-bottom:8px}
@@ -184,22 +203,15 @@
     .error-icon{font-size:3rem;margin-bottom:16px}
     .error-title{font-size:1.25rem;font-weight:700;margin-bottom:8px;color:var(--error)}
     .error-message{color:var(--text-secondary);margin-bottom:24px}
-    .error-actions{display:flex;gap:12px;justify-content:center}
+    .error-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-    /* === EXAMPLES === */
-    #examples-section{background:var(--bg-primary)}
-    .examples-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-    .example-card{border-radius:var(--radius-lg);overflow:hidden;background:var(--surface-1);border:1px solid var(--glass-border);transition:transform var(--transition-base),box-shadow var(--transition-base)}
-    .example-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-glow)}
-    .example-imgs{display:flex;height:200px}
-    .example-side{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg-tertiary)}
-    .example-side.after-side{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(245,158,11,.2))}
-    .example-side-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:.625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:var(--radius-full);white-space:nowrap}
-    .example-emoji{font-size:3.5rem;line-height:1}
-    .example-divider{width:2px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3),transparent);flex-shrink:0}
-    .example-info{padding:16px}
-    .example-title{font-size:.875rem;font-weight:700;margin-bottom:2px}
-    .example-subtitle{font-size:.75rem;color:var(--text-secondary)}
+    /* === PROVIDER INFO CARD === */
+    .provider-info{max-width:700px;margin:32px auto 0;background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:20px 24px}
+    .provider-info-row{display:flex;gap:24px;flex-wrap:wrap}
+    .provider-option{flex:1;min-width:220px}
+    .provider-option-header{display:flex;align-items:center;gap:8px;font-size:.875rem;font-weight:700;margin-bottom:6px}
+    .provider-option p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
+    .provider-divider{width:1px;background:var(--glass-border);flex-shrink:0}
 
     /* === HISTORY === */
     #history-section{background:var(--bg-secondary)}
@@ -242,21 +254,25 @@
     .footer-bottom p{font-size:.8125rem;color:var(--text-muted)}
     .footer-bottom a{color:var(--accent-purple-light)}
 
-    /* === MODAL === */
+    /* === HF TOKEN MODAL === */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--transition-base) ease}
-    .modal-card{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:32px;max-width:480px;width:100%;box-shadow:var(--shadow-lg);animation:slideUp var(--transition-slow) ease}
-    .modal-icon{width:56px;height:56px;background:var(--accent-purple-dim);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+    .modal-card{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:32px;max-width:500px;width:100%;box-shadow:var(--shadow-lg);animation:slideUp var(--transition-slow) ease}
+    .modal-icon{width:56px;height:56px;background:rgba(251,146,60,.15);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
     .modal-card h2{font-size:1.375rem;font-weight:800;margin-bottom:8px}
-    .modal-card>p{font-size:.9rem;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
-    .modal-card>p a{color:var(--accent-purple-light);text-decoration:underline}
+    .modal-card>.modal-desc{font-size:.9rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
+    .modal-card>.modal-desc a{color:var(--accent-purple-light);text-decoration:underline}
+    .compare-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+    .compare-mode{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:14px}
+    .compare-mode-title{font-size:.8125rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+    .compare-mode-desc{font-size:.75rem;color:var(--text-secondary);line-height:1.4}
     .input-group{margin-bottom:20px}
     .input-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:8px}
     .input-field{width:100%;background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:12px 16px;color:var(--text-primary);font-size:.9375rem;font-family:var(--font-sans);transition:border-color var(--transition-base);outline:none}
     .input-field:focus{border-color:var(--accent-purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
     .input-field::placeholder{color:var(--text-muted)}
     .modal-actions{display:flex;gap:12px}
-    .modal-security-note{margin-top:20px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);font-size:.8rem;color:var(--text-secondary);line-height:1.5}
-    .modal-security-note strong{color:var(--accent-gold)}
+    .modal-note{margin-top:16px;padding:10px 14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius-md);font-size:.8rem;color:var(--text-secondary);line-height:1.5}
+    .modal-note strong{color:var(--accent-green)}
 
     /* === TOASTS === */
     #toast-container{position:fixed;top:24px;right:24px;z-index:var(--z-toast);display:flex;flex-direction:column;gap:12px;pointer-events:none}
@@ -288,32 +304,33 @@
     /* === RESPONSIVE === */
     @media(max-width:1024px){
       .presets-grid{grid-template-columns:repeat(3,1fr)}
-      .examples-grid{grid-template-columns:repeat(2,1fr)}
       .footer-grid{grid-template-columns:1fr 1fr}
       .footer-brand{grid-column:1/-1}
+      .how-grid{grid-template-columns:1fr}
     }
     @media(max-width:768px){
       .nav-links{display:none}
       .nav-hamburger{display:flex}
-      .nav-actions .btn-secondary{display:none}
       section{padding:64px 0}
       .presets-grid{grid-template-columns:repeat(2,1fr)}
-      .examples-grid{grid-template-columns:1fr}
       .upload-tips{grid-template-columns:1fr;gap:12px}
       .footer-grid{grid-template-columns:1fr;gap:32px}
       .footer-bottom{flex-direction:column;text-align:center}
       #history-grid{grid-template-columns:repeat(2,1fr)}
       .hero-stats{gap:24px}
+      .compare-modes{grid-template-columns:1fr}
+      .provider-divider{display:none}
+      .provider-info-row{flex-direction:column}
     }
     @media(max-width:480px){
       .container{padding:0 16px}
       .presets-grid{grid-template-columns:1fr 1fr}
-      .hero-cta-group{flex-direction:column}
-      .hero-cta-group .btn{width:100%;justify-content:center}
+      .hero-cta-group,.hero-badges{flex-direction:column;align-items:flex-start}
       .modal-actions{flex-direction:column}
       .result-actions{flex-direction:column}
       .result-actions .btn{width:100%}
       .upload-card{padding:20px}
+      .error-actions{flex-direction:column;align-items:center}
     }
   </style>
 </head>
@@ -330,12 +347,12 @@
       <ul class="nav-links">
         <li><a href="#upload-section">Upload</a></li>
         <li><a href="#presets-section">Styles</a></li>
-        <li><a href="#examples-section">Examples</a></li>
+        <li><a href="#how-section">How it works</a></li>
         <li><a href="#faq-section">FAQ</a></li>
       </ul>
       <div class="nav-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openApiKeyModal()">⚙️ API Key</button>
-        <a href="#upload-section" class="btn btn-primary btn-sm">Get Started</a>
+        <button class="btn btn-secondary btn-sm" onclick="openHfModal()">🤗 HF Token</button>
+        <a href="#upload-section" class="btn btn-primary btn-sm">Try Free</a>
         <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -349,10 +366,10 @@
   <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
   <a href="#upload-section" onclick="closeMobileMenu()">Upload Photo</a>
   <a href="#presets-section" onclick="closeMobileMenu()">Style Presets</a>
-  <a href="#examples-section" onclick="closeMobileMenu()">Examples</a>
+  <a href="#how-section" onclick="closeMobileMenu()">How it works</a>
   <a href="#history-section" onclick="closeMobileMenu()">My Headshots</a>
   <a href="#faq-section" onclick="closeMobileMenu()">FAQ</a>
-  <button class="btn btn-primary" onclick="closeMobileMenu();openApiKeyModal()">⚙️ Configure API Key</button>
+  <button class="btn btn-secondary" onclick="closeMobileMenu();openHfModal()">🤗 Add HF Token</button>
 </div>
 
 <!-- ======= HERO ======= -->
@@ -362,24 +379,74 @@
   <div class="hero-orb hero-orb-3"></div>
   <div class="container">
     <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        AI-Powered · No Photographer Needed
-      </div>
-      <h1>Professional<br><span class="gradient-text">Headshots</span><br>in Seconds</h1>
+      <h1>Professional<br><span class="gradient-text">Headshots</span><br>for Free</h1>
       <p class="hero-subtitle">
-        Upload any selfie and AI transforms it into a studio-quality corporate
-        headshot. Perfect for LinkedIn, resumes, and passports.
+        Upload a photo, pick a style, and AI generates a professional corporate
+        headshot instantly — no account, no credit card, no catch.
       </p>
+      <div class="hero-badges">
+        <span class="free-badge"><span class="dot"></span>100% Free · No API Key Required</span>
+        <span class="free-badge" style="color:var(--accent-purple-light);background:var(--accent-purple-dim);border-color:rgba(124,58,237,.3)"><span class="dot" style="background:var(--accent-purple-light)"></span>Powered by Pollinations AI</span>
+      </div>
       <div class="hero-cta-group">
-        <a href="#upload-section" class="btn btn-primary btn-lg">✨ Transform My Photo</a>
-        <a href="#examples-section" class="btn btn-secondary btn-lg">See Examples</a>
+        <a href="#upload-section" class="btn btn-primary btn-lg">✨ Generate Free Headshot</a>
+        <a href="#how-section" class="btn btn-secondary btn-lg">How it works</a>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><span class="hero-stat-value">10K+</span><span class="hero-stat-label">Headshots generated</span></div>
-        <div class="hero-stat"><span class="hero-stat-value">&lt;30s</span><span class="hero-stat-label">Average generation time</span></div>
-        <div class="hero-stat"><span class="hero-stat-value">5</span><span class="hero-stat-label">Professional styles</span></div>
-        <div class="hero-stat"><span class="hero-stat-value">Free*</span><span class="hero-stat-label">With your API key</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">Free</span><span class="hero-stat-label">Always, no limits</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">&lt;15s</span><span class="hero-stat-label">Generation time</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">5</span><span class="hero-stat-label">Style presets</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">0</span><span class="hero-stat-label">Signup steps</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= HOW IT WORKS ======= -->
+<section id="how-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">⚡ Simple</div>
+      <h2>How It <span class="gradient-text">Works</span></h2>
+      <p>Three steps. No account. No payment. Just a great headshot.</p>
+    </div>
+    <div class="how-grid will-reveal">
+      <div class="how-card">
+        <div class="how-step">1</div>
+        <div class="how-icon">📸</div>
+        <div class="how-title">Upload Your Photo</div>
+        <div class="how-desc">Upload any selfie or portrait photo. We compress it locally — it never leaves your device until generation.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-step">2</div>
+        <div class="how-icon">🎨</div>
+        <div class="how-title">Pick a Style</div>
+        <div class="how-desc">Choose from 5 professional presets: formal suit, female executive, corporate, passport, or LinkedIn-ready.</div>
+      </div>
+      <div class="how-card">
+        <div class="how-step">3</div>
+        <div class="how-icon">⬇️</div>
+        <div class="how-title">Download &amp; Use</div>
+        <div class="how-desc">Your AI-generated headshot is ready in seconds. Download it and use it on LinkedIn, resumes, or anywhere.</div>
+      </div>
+    </div>
+    <div class="provider-info will-reveal">
+      <div class="provider-info-row">
+        <div class="provider-option">
+          <div class="provider-option-header">
+            <span class="mode-pill pollinations">✨ Default</span>
+            <strong>Pollinations AI</strong>
+          </div>
+          <p>Completely free. No account or API key needed. Uses FLUX to generate professional headshots from your style selection. Works instantly for everyone.</p>
+        </div>
+        <div class="provider-divider"></div>
+        <div class="provider-option">
+          <div class="provider-option-header">
+            <span class="mode-pill huggingface">🤗 Enhanced</span>
+            <strong>HuggingFace (optional)</strong>
+          </div>
+          <p>Free HuggingFace account + token unlocks face-preserving image-to-image mode. Your face features are carried into the generated headshot. <button class="btn-ghost" style="font-size:.8rem;padding:0;color:var(--accent-purple-light);text-decoration:underline" onclick="openHfModal()">Add token →</button></p>
+        </div>
       </div>
     </div>
   </div>
@@ -390,8 +457,8 @@
   <div class="container">
     <div class="section-header will-reveal">
       <div class="section-tag">📸 Step 1</div>
-      <h2>Upload Your <span class="gradient-text">Portrait</span></h2>
-      <p>Choose a clear, front-facing photo. Better input means a more stunning result.</p>
+      <h2>Upload Your <span class="gradient-text">Photo</span></h2>
+      <p>Any portrait works. The clearer your face, the better the result.</p>
     </div>
     <div class="upload-card glass-card will-reveal">
       <div id="drop-zone" role="button" tabindex="0" aria-label="Upload photo">
@@ -400,7 +467,7 @@
         <p class="drop-zone-subtitle">or click to browse files</p>
         <button class="btn btn-secondary" id="browse-btn" type="button">Choose Photo</button>
         <input type="file" id="file-input" accept="image/jpeg,image/jpg,image/png,image/webp" hidden>
-        <p class="drop-zone-formats">JPG, PNG, WEBP · Max 20MB · Recommended: 512×512px or larger</p>
+        <p class="drop-zone-formats">JPG, PNG, WEBP · Max 20MB · Used as "before" reference &amp; for HF face-preserve mode</p>
       </div>
       <div id="upload-preview" hidden>
         <div class="preview-image-wrap">
@@ -412,7 +479,7 @@
             <div class="preview-filename" id="preview-filename">photo.jpg</div>
             <div class="preview-filesize" id="preview-filesize">2.4 MB</div>
           </div>
-          <button class="btn btn-ghost btn-sm" id="change-photo-btn">↩ Change Photo</button>
+          <button class="btn btn-ghost btn-sm" id="change-photo-btn">↩ Change</button>
         </div>
       </div>
       <div class="upload-tips">
@@ -472,9 +539,12 @@
         <div class="preset-desc">Warm smile, approachable look</div>
       </div>
     </div>
-    <div class="transform-btn-wrap will-reveal">
-      <button class="btn btn-primary btn-lg" id="transform-btn" disabled>✨ Transform My Headshot</button>
-      <p style="margin-top:12px;font-size:.875rem;color:var(--text-muted)" id="transform-hint">Upload a photo and select a style to continue</p>
+    <div class="transform-area will-reveal">
+      <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Headshot</button>
+      <div class="transform-mode-row">
+        <span id="active-mode-pill" class="mode-pill pollinations">✨ Pollinations AI · Free</span>
+        <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Select a style to continue</span>
+      </div>
     </div>
   </div>
 </section>
@@ -489,13 +559,13 @@
     <div id="loading-state">
       <div class="spinner-ring"></div>
       <p class="loading-title">Generating your headshot…</p>
-      <p id="progress-label">Initializing AI model…</p>
+      <p id="progress-label">Connecting to AI…</p>
       <div class="progress-track"><div id="progress-bar"></div></div>
       <div class="loading-steps">
-        <div class="loading-step" id="step-1"><div class="step-dot"></div><span>Analyzing</span></div>
-        <div class="loading-step" id="step-2"><div class="step-dot"></div><span>Styling</span></div>
-        <div class="loading-step" id="step-3"><div class="step-dot"></div><span>Enhancing</span></div>
-        <div class="loading-step" id="step-4"><div class="step-dot"></div><span>Finishing</span></div>
+        <div class="loading-step" id="step-1"><div class="step-dot"></div><span>Composing</span></div>
+        <div class="loading-step" id="step-2"><div class="step-dot"></div><span>Rendering</span></div>
+        <div class="loading-step" id="step-3"><div class="step-dot"></div><span>Polishing</span></div>
+        <div class="loading-step" id="step-4"><div class="step-dot"></div><span>Done</span></div>
       </div>
     </div>
     <div id="error-state" hidden>
@@ -510,7 +580,7 @@
     <div id="result-display" hidden>
       <div class="slider-container" id="slider-container">
         <img id="before-img" src="" alt="Original photo">
-        <img id="after-img" src="" alt="AI transformed headshot">
+        <img id="after-img" src="" alt="AI generated headshot">
         <div id="slider-handle"></div>
         <span class="slider-label label-before">Before</span>
         <span class="slider-label label-after">After</span>
@@ -526,59 +596,13 @@
   </div>
 </section>
 
-<!-- ======= EXAMPLES ======= -->
-<section id="examples-section">
-  <div class="container">
-    <div class="section-header will-reveal">
-      <div class="section-tag">🌟 Examples</div>
-      <h2>See What's <span class="gradient-text">Possible</span></h2>
-      <p>AI transformations that preserve your identity while delivering a polished professional look.</p>
-    </div>
-    <div class="examples-grid">
-      <div class="example-card will-reveal">
-        <div class="example-imgs">
-          <div class="example-side"><span class="example-emoji">🧑</span><span class="example-side-label">Before</span></div>
-          <div class="example-divider"></div>
-          <div class="example-side after-side"><span class="example-emoji">👔</span><span class="example-side-label">After</span></div>
-        </div>
-        <div class="example-info">
-          <p class="example-title">Male Formal Suit</p>
-          <p class="example-subtitle">Casual selfie → LinkedIn profile</p>
-        </div>
-      </div>
-      <div class="example-card will-reveal">
-        <div class="example-imgs">
-          <div class="example-side"><span class="example-emoji">👩</span><span class="example-side-label">Before</span></div>
-          <div class="example-divider"></div>
-          <div class="example-side after-side"><span class="example-emoji">👩‍💼</span><span class="example-side-label">After</span></div>
-        </div>
-        <div class="example-info">
-          <p class="example-title">Female Professional</p>
-          <p class="example-subtitle">Smartphone photo → Executive portrait</p>
-        </div>
-      </div>
-      <div class="example-card will-reveal">
-        <div class="example-imgs">
-          <div class="example-side"><span class="example-emoji">🧑‍🦱</span><span class="example-side-label">Before</span></div>
-          <div class="example-divider"></div>
-          <div class="example-side after-side"><span class="example-emoji">🪪</span><span class="example-side-label">After</span></div>
-        </div>
-        <div class="example-info">
-          <p class="example-title">Passport / ID Photo</p>
-          <p class="example-subtitle">Casual portrait → Official ID style</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ======= HISTORY ======= -->
 <section id="history-section">
   <div class="container">
     <div class="section-header will-reveal">
       <div class="section-tag">🕒 History</div>
       <h2>Your Recent <span class="gradient-text">Headshots</span></h2>
-      <p>Your last 10 generations are saved in your browser. No account required.</p>
+      <p>Last 10 generations saved in your browser. No account needed.</p>
     </div>
     <div id="history-grid"></div>
     <div id="history-empty">
@@ -599,38 +623,34 @@
       <div class="section-tag">❓ FAQ</div>
       <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
     </div>
-    <div class="faq-list" id="faq-list">
+    <div class="faq-list">
       <div class="faq-item">
-        <button class="faq-question">How does HeadshotAI work?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">HeadshotAI uses advanced image-to-image AI (powered by <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a>) to transform your casual photo into a professional headshot. The AI analyzes your facial features, preserves your identity, and applies the chosen professional style with studio-quality lighting and background.</div></div>
+        <button class="faq-question">Is this really free?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes, completely free. The default mode uses <a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a>, a free public API that requires no account or key. There are no hidden fees, subscriptions, or credit limits.</div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">Do I need to pay to use this?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">This app is completely free and open-source. You only pay for your own <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> API usage — typically a few cents per image. New accounts include free credits to get started.</div></div>
+        <button class="faq-question">How does it generate a headshot without my API key?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Pollinations AI is a free, open-access image generation service powered by FLUX. It accepts requests from anyone without authentication — similar to how you can open an image URL in a browser. Your style selection is turned into an optimized prompt and sent to their API.</div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">Is my API key safe?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Your key is stored only in your browser's localStorage and is sent directly from your browser to fal.ai — never through any third-party server. We recommend creating a <strong>scoped key</strong> on the fal.ai dashboard limited to only the models this app uses, and setting a spending limit. Never commit a real API key to a public GitHub repository.</div></div>
+        <button class="faq-question">Will the generated headshot look like me?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">In the default free mode (Pollinations), the app generates a professional headshot based on your chosen style — it's a text-to-image generation, so the face is AI-created. For actual face preservation, add a free <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">HuggingFace token</a> to enable image-to-image mode, which uses your uploaded photo as a visual reference.</div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">What photo gives the best results?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Use a clear, well-lit, front-facing photo where your face is clearly visible. Aim for at least 512×512px. Avoid blurry images, extreme angles, hats covering your face, or heavy filters. Natural or soft indoor lighting works best.</div></div>
+        <button class="faq-question">What is the HuggingFace token for?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Adding a free HuggingFace token unlocks the enhanced mode: your uploaded photo is sent to the <code>timbrooks/instruct-pix2pix</code> model on HuggingFace, which edits your actual photo to add professional attire and background while preserving your face. Create a free account at <a href="https://huggingface.co" target="_blank" rel="noopener">huggingface.co</a> to get a token — no credit card required.</div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">Will it change my appearance?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">The AI is designed to preserve your facial identity. It changes your clothing, background, and lighting to match the chosen style while keeping your face recognizable. Minor lighting enhancements may be applied.</div></div>
+        <button class="faq-question">Is my photo stored or shared?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">In default mode (Pollinations), your photo is used locally only as the "before" preview — it is never uploaded anywhere. In HuggingFace mode, your compressed photo is sent to HuggingFace's inference API. Generated thumbnails are saved in your browser's localStorage only. This is a fully static, serverless app with no database.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How long does generation take?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Most headshots generate in 15–40 seconds, depending on server load. fal.ai's GPU-accelerated infrastructure is optimized for fast inference.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Pollinations AI typically responds in 5–15 seconds. HuggingFace inference can take 20–60 seconds, and if the model is cold (not recently used) the first request may take up to 2 minutes while it loads. Subsequent requests are faster.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">Can I use the result commercially?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Generated images are yours to use, subject to <a href="https://fal.ai/terms" target="_blank" rel="noopener">fal.ai's terms of service</a>. Since you're generating a headshot of yourself, the result is suitable for personal and professional use (LinkedIn, resumes, company profiles, etc.).</div></div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-question">Where is my data stored?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">This app stores thumbnails of recent generations in your browser's localStorage only. Your photos are sent to fal.ai per their <a href="https://fal.ai/privacy" target="_blank" rel="noopener">privacy policy</a>. No data is stored on any server we operate — this is a fully static, serverless application.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Pollinations AI's outputs are available under a permissive license suitable for personal and professional use. HuggingFace model outputs are subject to each model's license. For LinkedIn, resumes, and company profiles, you're free to use these headshots.</div></div>
       </div>
     </div>
   </div>
@@ -642,54 +662,62 @@
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="#" class="nav-logo"><div class="nav-logo-icon">✨</div>HeadshotAI</a>
-        <p>Transform any selfie into a professional corporate headshot in seconds. Powered by AI, designed for everyone.</p>
+        <p>Free AI professional headshots for everyone. No account, no payment, no limits.</p>
       </div>
       <div class="footer-col">
         <h4>Product</h4>
         <ul>
           <li><a href="#upload-section">Upload Photo</a></li>
           <li><a href="#presets-section">Style Presets</a></li>
-          <li><a href="#examples-section">Examples</a></li>
+          <li><a href="#how-section">How it works</a></li>
           <li><a href="#history-section">My Headshots</a></li>
         </ul>
       </div>
       <div class="footer-col">
-        <h4>Resources</h4>
+        <h4>Powered By</h4>
         <ul>
-          <li><a href="#faq-section">FAQ</a></li>
-          <li><a href="https://fal.ai" target="_blank" rel="noopener">fal.ai API</a></li>
-          <li><a href="https://github.com/mikeolofernes/photogenerator" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a></li>
+          <li><a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace</a></li>
+          <li><a href="https://github.com/mikeolofernes/photogenerator" target="_blank" rel="noopener">GitHub (source)</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2025 HeadshotAI. Open-source, free to use.</p>
-      <p>Powered by <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> · Hosted on GitHub Pages</p>
+      <p>© 2025 HeadshotAI. Open-source, forever free.</p>
+      <p>Default: <a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a> · Enhanced: <a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace</a></p>
     </div>
   </div>
 </footer>
 
-<!-- ======= API KEY MODAL ======= -->
-<div id="api-key-modal" class="modal-overlay" hidden>
+<!-- ======= HF TOKEN MODAL ======= -->
+<div id="hf-modal" class="modal-overlay" hidden>
   <div class="modal-card">
-    <div class="modal-icon">🔑</div>
-    <h2>Enter Your API Key</h2>
-    <p>
-      This app uses <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> to generate headshots.
-      Sign up free and get your API key from the
-      <a href="https://fal.ai/dashboard/keys" target="_blank" rel="noopener">fal.ai dashboard</a>.
+    <div class="modal-icon">🤗</div>
+    <h2>Upgrade to Face-Preserving Mode</h2>
+    <p class="modal-desc">
+      Add a free <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">HuggingFace token</a> to enable image-to-image mode — your uploaded face is used as the base for the transformation.
     </p>
+    <div class="compare-modes">
+      <div class="compare-mode">
+        <div class="compare-mode-title"><span class="mode-pill pollinations" style="font-size:.65rem;padding:2px 8px">✨ Default</span></div>
+        <div class="compare-mode-desc">Pollinations AI — free, no token, text-to-image. Generates a professional headshot from your style choice. Face is AI-created.</div>
+      </div>
+      <div class="compare-mode" style="border-color:rgba(251,146,60,.3)">
+        <div class="compare-mode-title"><span class="mode-pill huggingface" style="font-size:.65rem;padding:2px 8px">🤗 Enhanced</span></div>
+        <div class="compare-mode-desc">HuggingFace — free account token, image-to-image. Uses your uploaded photo as the reference, preserving your face &amp; features.</div>
+      </div>
+    </div>
     <div class="input-group">
-      <label for="api-key-input" class="input-label">fal.ai API Key</label>
-      <input type="password" id="api-key-input" class="input-field"
-        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:..." autocomplete="off" spellcheck="false">
+      <label for="hf-token-input" class="input-label">HuggingFace Token <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+      <input type="password" id="hf-token-input" class="input-field"
+        placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
     </div>
     <div class="modal-actions">
-      <button class="btn btn-primary" id="save-api-key-btn" style="flex:1">Save &amp; Continue</button>
-      <button class="btn btn-secondary" id="cancel-api-key-btn">Cancel</button>
+      <button class="btn btn-primary" id="save-hf-btn" style="flex:1">Enable Enhanced Mode</button>
+      <button class="btn btn-secondary" id="clear-hf-btn">Use Free Mode</button>
     </div>
-    <div class="modal-security-note">
-      <strong>⚠️ Security note:</strong> Your key is stored only in your browser's localStorage and sent directly to fal.ai. Never commit a real API key to a public GitHub repository.
+    <div class="modal-note">
+      <strong>✅ Free account:</strong> Sign up at <a href="https://huggingface.co/join" target="_blank" rel="noopener" style="color:var(--accent-green)">huggingface.co/join</a>, then get a token from <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener" style="color:var(--accent-green)">Settings → Tokens</a>. No credit card required.
     </div>
   </div>
 </div>
@@ -702,49 +730,55 @@
 'use strict';
 
 // =============================================
-// CONFIG — swap provider or endpoint here
+// CONFIG
+// Provider swap: change ACTIVE_PROVIDER or let
+// the app auto-detect based on HF token presence.
 // =============================================
-const API_KEY       = ''; // leave empty; user provides key via modal
-const FAL_ENDPOINT  = 'https://fal.run/fal-ai/flux/dev/image-to-image';
-const MAX_HISTORY   = 10;
-const MAX_IMG_DIM   = 1024;
-const JPEG_QUALITY  = 0.88;
-const THUMB_SIZE    = 240;
-const THUMB_QUALITY = 0.72;
+const POLLINATIONS_BASE  = 'https://image.pollinations.ai/prompt';
+const HF_IMG2IMG_MODEL   = 'timbrooks/instruct-pix2pix';
+const HF_API_BASE        = 'https://api-inference.huggingface.co/models';
+const HF_TOKEN_KEY       = 'headshot_hf_token';
+const MAX_HISTORY        = 10;
+const MAX_IMG_DIM        = 1024;
+const JPEG_QUALITY       = 0.88;
+const THUMB_SIZE         = 240;
+const THUMB_QUALITY      = 0.72;
 
 // =============================================
 // PRESETS
+// prompt      → used by Pollinations (text-to-image)
+// hfInstruct  → used by HuggingFace instruct-pix2pix
 // =============================================
 const PRESETS = {
   male_formal: {
     name: 'Male Formal Suit',
-    strength: 0.65,
-    prompt: 'professional corporate headshot portrait of a man, wearing a well-fitted navy blue or charcoal business suit, crisp white dress shirt, silk tie, clean professional look, soft studio lighting with catchlights, neutral light gray gradient background, sharp focus on face, skin retouching, confident expression, LinkedIn profile photo quality, photorealistic, 8K',
-    negativePrompt: 'cartoon, illustration, painting, anime, casual clothing, t-shirt, hoodie, outdoor background, busy background, text, watermark, blurry, low quality, distorted face, extra fingers, deformed, ugly, multiple people, hat',
+    prompt: 'professional corporate headshot portrait of a man, navy blue business suit, crisp white dress shirt, silk tie, soft studio lighting, neutral light gray gradient background, sharp focus face, skin retouching, confident expression, photorealistic, 8K, LinkedIn photo',
+    hfInstruct: 'make this person wear a professional navy blue business suit with white shirt and tie, soft studio lighting, neutral gray background, professional headshot',
+    negativePrompt: 'cartoon, anime, casual, t-shirt, outdoor, blurry, watermark, text, distorted face, multiple people',
   },
   female_professional: {
     name: 'Female Professional',
-    strength: 0.65,
-    prompt: 'professional corporate headshot portrait of a woman, wearing an elegant tailored blazer in navy or black, professional blouse, polished appearance, soft studio lighting with fill light, neutral warm gradient background, sharp focus on face, natural makeup, confident warm expression, LinkedIn profile photo quality, photorealistic, 8K',
-    negativePrompt: 'cartoon, illustration, painting, anime, casual, t-shirt, outdoor background, busy background, text, watermark, blurry, low quality, distorted face, extra fingers, deformed, multiple people, hat',
+    prompt: 'professional corporate headshot portrait of a woman, elegant tailored black blazer, professional blouse, soft studio lighting, warm gradient background, sharp focus face, natural makeup, confident expression, photorealistic, 8K, LinkedIn photo',
+    hfInstruct: 'make this person wear a professional navy blazer, soft studio lighting, neutral warm background, professional female executive headshot',
+    negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted face, multiple people',
   },
   neutral_corporate: {
     name: 'Neutral Corporate',
-    strength: 0.60,
-    prompt: 'professional corporate headshot portrait, wearing a sleek modern business blazer in dark gray or navy, gender-neutral professional appearance, clean minimal studio lighting, soft white or light gray background, sharp focus on face, natural professional expression, modern headshot, photorealistic, 8K',
-    negativePrompt: 'cartoon, illustration, anime, casual, outdoor, busy background, text, watermark, blurry, low quality, distorted, deformed, multiple people',
+    prompt: 'professional corporate headshot portrait, dark gray business blazer, gender-neutral professional look, clean minimal studio lighting, soft white background, sharp focus face, natural expression, modern headshot, photorealistic, 8K',
+    hfInstruct: 'make this person wear a professional dark gray business blazer, clean studio lighting, white background, corporate headshot',
+    negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted, multiple people',
   },
   passport: {
     name: 'Passport / ID',
-    strength: 0.55,
-    prompt: 'official passport style portrait photo, plain white background, person looking directly at camera, neutral closed-mouth expression, eyes open and alert, professional formal clothing visible at shoulders, even flat studio lighting, no shadows on background, centered face, sharp focus, photorealistic, government ID quality',
-    negativePrompt: 'cartoon, illustration, smile showing teeth, looking away, tilted head, artistic lighting, colored background, deep shadows, watermark, blurry, low quality, multiple people, sunglasses',
+    prompt: 'official passport photo portrait, plain white background, person looking directly at camera, neutral expression, mouth closed, formal clothing at shoulders, even flat lighting, no shadows on background, centered, sharp focus, photorealistic, government ID style',
+    hfInstruct: 'convert to official passport photo: plain white background, neutral expression, looking directly at camera, even flat lighting, formal clothing',
+    negativePrompt: 'cartoon, anime, smile, looking away, colored background, shadows, sunglasses, hat, watermark, blurry, multiple people',
   },
   linkedin: {
     name: 'LinkedIn Optimized',
-    strength: 0.65,
-    prompt: 'LinkedIn profile headshot portrait, professional business casual attire, smart blazer or jacket, warm confident approachable smile, trustworthy expression, soft natural studio lighting, blurred bokeh gradient background in warm gray or blue-gray tones, face sharp and well-lit, skin retouching, professional headshot quality, photorealistic, 8K',
-    negativePrompt: 'cartoon, illustration, casual t-shirt, outdoor background, busy distracting background, text, watermark, blurry, low quality, distorted face, tired expression, harsh shadows, multiple people',
+    prompt: 'LinkedIn profile headshot portrait, professional business casual blazer, warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, face sharp, skin retouching, photorealistic, 8K, approachable professional',
+    hfInstruct: 'make this person wear a professional blazer with warm confident smile, soft studio lighting, blurred professional background, LinkedIn headshot style',
+    negativePrompt: 'cartoon, anime, casual t-shirt, busy background, watermark, text, blurry, distorted face, harsh shadows, multiple people',
   },
 };
 
@@ -756,7 +790,6 @@ const state = {
   compressedDataUrl: null,
   selectedPreset: null,
   isGenerating: false,
-  apiKey: null,
   progressTimers: [],
 };
 
@@ -794,6 +827,25 @@ function dismissToast(t) {
   if (!t || !t.parentElement) return;
   t.classList.add('leaving');
   setTimeout(() => t.remove(), 300);
+}
+
+// =============================================
+// PROVIDER DETECTION
+// =============================================
+function getHfToken() {
+  return localStorage.getItem(HF_TOKEN_KEY) || null;
+}
+
+function activeProvider() {
+  return getHfToken() ? 'huggingface' : 'pollinations';
+}
+
+function updateModePill() {
+  const pill = $id('active-mode-pill');
+  if (!pill) return;
+  const hf = !!getHfToken();
+  pill.className = `mode-pill ${hf ? 'huggingface' : 'pollinations'}`;
+  pill.textContent = hf ? '🤗 HuggingFace · Face-preserving' : '✨ Pollinations AI · Free';
 }
 
 // =============================================
@@ -843,32 +895,22 @@ function compressDataUrl(dataUrl, maxDim = THUMB_SIZE, quality = THUMB_QUALITY) 
   });
 }
 
-async function fetchAsDataUrl(url) {
-  try {
-    const resp = await fetch(url);
-    const blob = await resp.blob();
-    return new Promise(resolve => {
-      const r = new FileReader();
-      r.onload = e => resolve(e.target.result);
-      r.readAsDataURL(blob);
-    });
-  } catch { return null; }
-}
-
 function formatBytes(b) {
   if (b < 1024) return b + ' B';
   if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
   return (b / 1048576).toFixed(1) + ' MB';
 }
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 // =============================================
 // UPLOAD HANDLING
 // =============================================
 function initUpload() {
-  const zone    = $id('drop-zone');
-  const input   = $id('file-input');
-  const browse  = $id('browse-btn');
-  const change  = $id('change-photo-btn');
+  const zone   = $id('drop-zone');
+  const input  = $id('file-input');
+  const browse = $id('browse-btn');
+  const change = $id('change-photo-btn');
 
   browse.addEventListener('click', e => { e.stopPropagation(); input.click(); });
   zone.addEventListener('click', () => input.click());
@@ -882,19 +924,18 @@ function initUpload() {
   zone.addEventListener('dragover', e => e.preventDefault());
   zone.addEventListener('drop', e => {
     e.preventDefault(); dragCnt = 0; zone.classList.remove('dragover');
-    const f = e.dataTransfer?.files[0];
-    if (f) handleFileSelect(f);
+    const f = e.dataTransfer?.files[0]; if (f) handleFileSelect(f);
   });
 }
 
 async function handleFileSelect(file) {
   if (!validateFile(file)) return;
-  const toast = showToast('Processing image…', 'info', 0);
+  const t = showToast('Processing image…', 'info', 0);
   try {
     const compressed = await compressImage(file);
     state.uploadedFile = file;
     state.compressedDataUrl = compressed;
-    dismissToast(toast);
+    dismissToast(t);
     $id('preview-img').src = compressed;
     $id('preview-filename').textContent = file.name;
     $id('preview-filesize').textContent = formatBytes(file.size);
@@ -902,8 +943,8 @@ async function handleFileSelect(file) {
     show($id('upload-preview'));
     updateTransformBtn();
     showToast('Photo ready! Now select a style.', 'success');
-  } catch (err) {
-    dismissToast(toast);
+  } catch {
+    dismissToast(t);
     showToast('Could not process image. Try a different file.', 'error');
   }
 }
@@ -956,107 +997,144 @@ function selectPreset(key) {
 function updateTransformBtn() {
   const btn  = $id('transform-btn');
   const hint = $id('transform-hint');
-  const ok   = !!state.compressedDataUrl && !!state.selectedPreset;
-  btn.disabled = !ok;
-  if (!state.compressedDataUrl && !state.selectedPreset) hint.textContent = 'Upload a photo and select a style to continue';
-  else if (!state.compressedDataUrl) hint.textContent = 'Upload a photo to continue';
-  else if (!state.selectedPreset) hint.textContent = 'Select a style to continue';
-  else hint.textContent = `Ready — "${PRESETS[state.selectedPreset].name}"`;
+  if (!state.selectedPreset) {
+    btn.disabled = false; // allow click to show guidance
+    hint.textContent = 'Select a style to continue';
+  } else {
+    btn.disabled = false;
+    hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}"`;
+  }
 }
 
 // =============================================
-// API KEY MANAGEMENT
+// AI GENERATION — POLLINATIONS (free, no key)
 // =============================================
-let _pendingAfterKey = false;
-
-function resolveApiKey() {
-  if (API_KEY && API_KEY.length > 20 && !API_KEY.includes('YOUR')) return API_KEY;
-  return localStorage.getItem('headshot_api_key') || null;
-}
-
-function openApiKeyModal(pending = false) {
-  _pendingAfterKey = pending;
-  const k = resolveApiKey();
-  if (k) $id('api-key-input').value = k;
-  show($id('api-key-modal'));
-  setTimeout(() => $id('api-key-input').focus(), 80);
-}
-
-function closeApiKeyModal() {
-  hide($id('api-key-modal'));
-  $id('api-key-input').value = '';
-}
-
-function saveApiKey(key) {
-  key = (key || '').trim();
-  if (key.length < 10) { showToast('Please enter a valid API key.', 'warning'); return false; }
-  localStorage.setItem('headshot_api_key', key);
-  state.apiKey = key;
-  showToast('API key saved!', 'success');
-  return true;
-}
-
-function initApiKeyModal() {
-  $id('save-api-key-btn').addEventListener('click', () => {
-    if (saveApiKey($id('api-key-input').value)) {
-      closeApiKeyModal();
-      if (_pendingAfterKey) { _pendingAfterKey = false; generateHeadshot(); }
-    }
+async function callPollinations(preset) {
+  const seed   = Math.floor(Math.random() * 999999);
+  const params = new URLSearchParams({
+    width: 1024, height: 1024,
+    model: 'flux',
+    seed,
+    nologo: true,
+    enhance: false,
   });
-  $id('cancel-api-key-btn').addEventListener('click', closeApiKeyModal);
-  $id('api-key-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeApiKeyModal(); });
-  $id('api-key-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') $id('save-api-key-btn').click();
-    if (e.key === 'Escape') closeApiKeyModal();
-  });
+  const url = `${POLLINATIONS_BASE}/${encodeURIComponent(preset.prompt)}?${params}`;
+
+  updateProgress(20, 'Sending request to Pollinations AI…');
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Pollinations error (${resp.status})`);
+
+  updateProgress(75, 'Downloading generated image…');
+  const blob   = await resp.blob();
+  if (!blob.type.startsWith('image/')) throw new Error('Unexpected response — try again.');
+  return URL.createObjectURL(blob);
 }
 
 // =============================================
-// AI GENERATION
+// AI GENERATION — HUGGINGFACE (free token, img2img)
+// =============================================
+async function callHuggingFace(imageDataUrl, preset, token, attempt = 0) {
+  const base64 = imageDataUrl.split(',')[1];
+  const url    = `${HF_API_BASE}/${HF_IMG2IMG_MODEL}`;
+
+  updateProgress(15, 'Sending image to HuggingFace…');
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      inputs: base64,
+      parameters: {
+        prompt: preset.hfInstruct,
+        num_inference_steps: 20,
+        image_guidance_scale: 1.5,
+        guidance_scale: 7.5,
+      },
+    }),
+  });
+
+  // Model loading — wait and retry
+  if (resp.status === 503) {
+    let waitSecs = 30;
+    try { const d = await resp.json(); waitSecs = Math.round(d.estimated_time || 30); } catch {}
+    if (attempt >= 3) throw new Error('Model took too long to load. Try again or switch to free mode.');
+    updateProgress(null, `Model is loading — retrying in ${waitSecs}s…`);
+    showToast(`HuggingFace model loading. Waiting ${waitSecs}s…`, 'warning', waitSecs * 1000);
+    await sleep(Math.min(waitSecs, 60) * 1000);
+    return callHuggingFace(imageDataUrl, preset, token, attempt + 1);
+  }
+
+  if (resp.status === 401) {
+    const e = new Error('Invalid HuggingFace token. Please check and re-enter.');
+    e.code = 'INVALID_TOKEN'; throw e;
+  }
+
+  if (!resp.ok) {
+    const d = await resp.json().catch(() => ({}));
+    throw new Error(d.error || `HuggingFace error (${resp.status})`);
+  }
+
+  updateProgress(80, 'Downloading result…');
+  const blob = await resp.blob();
+  if (!blob.type.startsWith('image/')) {
+    // May have returned JSON error
+    const text = await blob.text().catch(() => '');
+    throw new Error(JSON.parse(text)?.error || 'Invalid response from HuggingFace.');
+  }
+  return URL.createObjectURL(blob);
+}
+
+// =============================================
+// GENERATE HEADSHOT (main flow)
 // =============================================
 function initTransformBtn() {
   $id('transform-btn').addEventListener('click', () => {
     if (state.isGenerating) return;
-    state.apiKey = resolveApiKey();
-    if (!state.apiKey) { openApiKeyModal(true); return; }
+    if (!state.selectedPreset) {
+      showToast('Please select a style first.', 'warning');
+      $id('presets-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     generateHeadshot();
   });
-  $id('retry-btn').addEventListener('click', () => {
-    state.apiKey = resolveApiKey();
-    if (!state.apiKey) { openApiKeyModal(true); return; }
-    generateHeadshot();
-  });
+  $id('retry-btn').addEventListener('click', () => generateHeadshot());
 }
 
 async function generateHeadshot() {
-  if (state.isGenerating) return;
-  if (!state.compressedDataUrl || !state.selectedPreset) {
-    showToast('Upload a photo and select a style first.', 'warning'); return;
-  }
-  state.apiKey = resolveApiKey();
-  if (!state.apiKey) { openApiKeyModal(true); return; }
+  if (state.isGenerating || !state.selectedPreset) return;
 
   state.isGenerating = true;
-  const t0 = Date.now();
+  const t0     = Date.now();
+  const preset = PRESETS[state.selectedPreset];
+  const hfToken = getHfToken();
+  const provider = hfToken ? 'huggingface' : 'pollinations';
+
+  // HuggingFace requires uploaded image
+  if (provider === 'huggingface' && !state.compressedDataUrl) {
+    showToast('Please upload a photo to use face-preserving mode.', 'warning');
+    state.isGenerating = false;
+    return;
+  }
 
   show($id('result-section'));
   hide($id('error-state'));
   hide($id('result-display'));
   show($id('loading-state'));
   $id('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  startFakeProgress();
+  startFakeProgress(provider);
 
   try {
-    const preset = PRESETS[state.selectedPreset];
-    const outputUrl = await retryWithBackoff(
-      () => callFalAPI(state.compressedDataUrl, preset, state.apiKey), 3, 1500
-    );
+    let outputUrl;
+    if (provider === 'huggingface') {
+      outputUrl = await callHuggingFace(state.compressedDataUrl, preset, hfToken);
+    } else {
+      outputUrl = await callPollinations(preset);
+    }
 
     clearProgressTimers();
     updateProgress(100, 'Complete! ✨');
-    await sleep(350);
-    await handleSuccess(outputUrl, Date.now() - t0);
+    await sleep(300);
+    await handleSuccess(outputUrl, Date.now() - t0, provider);
 
   } catch (err) {
     clearProgressTimers();
@@ -1066,72 +1144,28 @@ async function generateHeadshot() {
   }
 }
 
-async function callFalAPI(imageDataUrl, preset, apiKey) {
-  const resp = await fetch(FAL_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Authorization': `Key ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      image_url: imageDataUrl,
-      prompt: preset.prompt,
-      negative_prompt: preset.negativePrompt,
-      num_inference_steps: 28,
-      guidance_scale: 3.5,
-      strength: preset.strength,
-      num_images: 1,
-      output_format: 'jpeg',
-      enable_safety_checker: true,
-    }),
-  });
-
-  if (resp.status === 401) {
-    const e = new Error('Invalid API key. Please check and re-enter.'); e.code = 'INVALID_KEY'; throw e;
-  }
-  if (resp.status === 422) {
-    const e = new Error('Image could not be processed. Try a different photo.'); e.code = 'BAD_IMAGE'; throw e;
-  }
-  if (!resp.ok) {
-    const d = await resp.json().catch(() => ({}));
-    const e = new Error(d.detail || d.message || `API error (${resp.status})`);
-    e.status = resp.status; throw e;
-  }
-
-  const data = await resp.json();
-  const url  = data?.images?.[0]?.url || data?.image?.url || data?.output?.images?.[0];
-  if (!url) throw new Error('No image returned from API. Please try again.');
-  return url;
-}
-
-async function retryWithBackoff(fn, maxRetries = 3, baseDelay = 1500) {
-  for (let i = 0; i <= maxRetries; i++) {
-    try { return await fn(); }
-    catch (err) {
-      const retryable = !err.code && (err.status >= 500 || err.status === 429 || !err.status);
-      if (!retryable || i === maxRetries) throw err;
-      const delay = baseDelay * Math.pow(2, i);
-      updateProgress(null, `Retrying in ${Math.round(delay / 1000)}s… (${i + 1}/${maxRetries})`);
-      await sleep(delay);
-    }
-  }
-}
-
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
 // =============================================
 // LOADING UI
 // =============================================
-const MILESTONES = [
-  { pct: 12, label: 'Analyzing facial features…',       delay: 900,   step: 1 },
-  { pct: 30, label: 'Generating professional style…',   delay: 4000,  step: 1 },
-  { pct: 52, label: 'Applying lighting & background…',  delay: 9000,  step: 2 },
-  { pct: 70, label: 'Refining details…',                delay: 15000, step: 3 },
-  { pct: 85, label: 'Adding finishing touches…',        delay: 21000, step: 4 },
-  { pct: 92, label: 'Almost there…',                    delay: 27000, step: 4 },
+const MILESTONES_POLLINATIONS = [
+  { pct: 10, label: 'Composing professional prompt…',    delay: 600,  step: 1 },
+  { pct: 35, label: 'FLUX is rendering your headshot…',  delay: 3000, step: 2 },
+  { pct: 65, label: 'Applying style and lighting…',      delay: 7000, step: 2 },
+  { pct: 85, label: 'Polishing final details…',          delay: 11000, step: 3 },
+];
+const MILESTONES_HF = [
+  { pct: 10, label: 'Uploading image to HuggingFace…',   delay: 600,  step: 1 },
+  { pct: 30, label: 'AI is analyzing your face…',        delay: 4000, step: 2 },
+  { pct: 55, label: 'Applying professional style…',      delay: 12000, step: 2 },
+  { pct: 78, label: 'Enhancing lighting & background…',  delay: 25000, step: 3 },
+  { pct: 90, label: 'Almost done…',                      delay: 40000, step: 3 },
 ];
 
-function startFakeProgress() {
-  updateProgress(3, 'Initializing…');
+function startFakeProgress(provider) {
+  updateProgress(3, 'Starting…');
   setStepActive(null);
-  MILESTONES.forEach(({ pct, label, delay, step }) => {
+  const milestones = provider === 'huggingface' ? MILESTONES_HF : MILESTONES_POLLINATIONS;
+  milestones.forEach(({ pct, label, delay, step }) => {
     const t = setTimeout(() => { updateProgress(pct, label); setStepActive(step); }, delay);
     state.progressTimers.push(t);
   });
@@ -1160,14 +1194,15 @@ function setStepActive(active) {
 // =============================================
 // RESULT HANDLING
 // =============================================
-async function handleSuccess(outputUrl, elapsed) {
+async function handleSuccess(outputUrl, elapsed, provider) {
   hide($id('loading-state'));
   hide($id('error-state'));
 
-  $id('before-img').src = state.compressedDataUrl;
+  // Before image: use uploaded photo if available, otherwise show placeholder color
+  const beforeSrc = state.compressedDataUrl || '';
+  $id('before-img').src = beforeSrc;
   $id('after-img').src  = outputUrl;
 
-  // Wait for the transformed image to load
   await new Promise(resolve => {
     const img = $id('after-img');
     if (img.complete) { resolve(); return; }
@@ -1176,14 +1211,24 @@ async function handleSuccess(outputUrl, elapsed) {
 
   $id('slider-range').value = 50;
   updateSlider(50);
+
+  // Hide before side if no upload
+  if (!beforeSrc) {
+    $id('slider-handle').style.display = 'none';
+    $id('slider-range').style.display  = 'none';
+    $qsa('.slider-label').forEach(l => l.style.display = 'none');
+    updateSlider(100);
+  }
+
   show($id('result-display'));
 
-  const secs = (elapsed / 1000).toFixed(1);
-  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · Generated in ${secs}s`;
+  const secs       = (elapsed / 1000).toFixed(1);
+  const provLabel  = provider === 'huggingface' ? 'HuggingFace · face-preserving' : 'Pollinations AI · free';
+  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · ${provLabel} · ${secs}s`;
 
-  await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed });
+  await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed, provider });
   renderHistory(loadHistory());
-  showToast('Headshot generated! Drag the slider to compare.', 'success');
+  showToast(state.compressedDataUrl ? 'Done! Drag the slider to compare.' : 'Headshot generated!', 'success');
 }
 
 function handleError(err) {
@@ -1193,15 +1238,15 @@ function handleError(err) {
   show($id('error-state'));
   showToast(err.message || 'Generation failed', 'error');
 
-  if (err.code === 'INVALID_KEY') {
-    localStorage.removeItem('headshot_api_key');
-    state.apiKey = null;
-    setTimeout(() => openApiKeyModal(true), 900);
+  if (err.code === 'INVALID_TOKEN') {
+    localStorage.removeItem(HF_TOKEN_KEY);
+    updateModePill();
+    setTimeout(() => openHfModal(), 800);
   }
 }
 
 // =============================================
-// SLIDER
+// BEFORE/AFTER SLIDER
 // =============================================
 function initSlider() {
   const range     = $id('slider-range');
@@ -1242,16 +1287,12 @@ function initDownloadBtn() {
 
 async function downloadImage(url, filename) {
   try {
-    const blob    = await (await fetch(url)).blob();
-    const blobUrl = URL.createObjectURL(blob);
-    const a       = Object.assign(document.createElement('a'), { href: blobUrl, download: filename });
+    // blob: URLs (from URL.createObjectURL) can be downloaded directly
+    const a = Object.assign(document.createElement('a'), { href: url, download: filename });
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(blobUrl);
     showToast('Download started!', 'success');
   } catch {
-    const a = Object.assign(document.createElement('a'), { href: url, download: filename, target: '_blank' });
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    showToast('Opening in new tab — right-click to save.', 'info');
+    showToast('Right-click the image and choose "Save image as…"', 'info', 6000);
   }
 }
 
@@ -1267,36 +1308,43 @@ function persistHistory(items) {
   catch { if (items.length > 3) persistHistory(items.slice(0, 3)); }
 }
 
-async function saveToHistory({ preset, outputUrl, elapsed }) {
-  const inputThumb  = await compressDataUrl(state.compressedDataUrl);
-  const raw         = await fetchAsDataUrl(outputUrl).catch(() => null);
-  const outputThumb = raw ? await compressDataUrl(raw) : outputUrl;
+async function saveToHistory({ preset, outputUrl, elapsed, provider }) {
+  const inputThumb  = state.compressedDataUrl ? await compressDataUrl(state.compressedDataUrl) : null;
+
+  // For blob URLs created by URL.createObjectURL, draw to canvas for thumbnail storage
+  let outputThumb = null;
+  try {
+    const img = new Image();
+    img.src = outputUrl;
+    await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; });
+    const c   = document.createElement('canvas');
+    const dim = Math.min(img.naturalWidth || THUMB_SIZE, THUMB_SIZE);
+    c.width = dim; c.height = dim;
+    const ctx = c.getContext('2d');
+    ctx.drawImage(img, 0, 0, dim, dim);
+    outputThumb = c.toDataURL('image/jpeg', THUMB_QUALITY);
+  } catch { outputThumb = null; }
 
   const history = loadHistory();
   history.unshift({
     id: `hs_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     timestamp: Date.now(),
-    preset,
-    presetName: PRESETS[preset]?.name || preset,
-    inputThumb,
-    outputThumb,
-    outputUrl,
-    generationTime: elapsed,
+    preset, presetName: PRESETS[preset]?.name || preset,
+    inputThumb, outputThumb,
+    generationTime: elapsed, provider,
   });
   persistHistory(history.slice(0, MAX_HISTORY));
 }
 
 function deleteHistoryItem(id) {
   const items = loadHistory().filter(i => i.id !== id);
-  persistHistory(items);
-  renderHistory(items);
+  persistHistory(items); renderHistory(items);
 }
 
 function clearHistory() {
-  if (!confirm('Delete all saved headshots? This cannot be undone.')) return;
+  if (!confirm('Delete all saved headshots?')) return;
   localStorage.removeItem('headshot_history');
-  renderHistory([]);
-  showToast('History cleared.', 'info');
+  renderHistory([]); showToast('History cleared.', 'info');
 }
 
 function initHistory() {
@@ -1309,36 +1357,71 @@ function renderHistory(items) {
   const empty  = $id('history-empty');
   const footer = $id('history-footer');
   grid.innerHTML = '';
-
   if (!items.length) { show(empty); hide(footer); return; }
   hide(empty); show(footer);
-
   items.forEach(item => {
     const card = document.createElement('div');
     card.className = 'history-card';
+    const thumb = item.outputThumb || '';
     card.innerHTML = `
-      <div class="history-thumb"><img src="${item.outputThumb || ''}" alt="${item.presetName}" loading="lazy"></div>
+      <div class="history-thumb">${thumb ? `<img src="${thumb}" alt="${item.presetName}" loading="lazy">` : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:2rem">✨</div>'}</div>
       <div class="history-meta">
         <div class="history-preset">${item.presetName}</div>
         <div class="history-date">${fmtDate(item.timestamp)}</div>
         <div class="history-actions">
-          <button class="btn btn-secondary">⬇ Save</button>
-          <button class="btn btn-ghost">🗑</button>
+          <button class="btn btn-secondary">🗑 Delete</button>
         </div>
       </div>`;
-    const [dl, del] = card.querySelectorAll('button');
-    dl.onclick  = () => downloadImage(item.outputUrl, `headshot-${item.preset}-${item.timestamp}.jpg`);
-    del.onclick = () => deleteHistoryItem(item.id);
+    card.querySelector('button').onclick = () => deleteHistoryItem(item.id);
     grid.appendChild(card);
   });
 }
 
 function fmtDate(ts) {
-  const d = new Date(ts), now = Date.now(), diff = now - ts;
+  const diff = Date.now() - ts;
   if (diff < 3600000)   return 'Just now';
   if (diff < 86400000)  return `${Math.floor(diff / 3600000)}h ago`;
   if (diff < 604800000) return `${Math.floor(diff / 86400000)}d ago`;
-  return d.toLocaleDateString();
+  return new Date(ts).toLocaleDateString();
+}
+
+// =============================================
+// HF TOKEN MODAL
+// =============================================
+function openHfModal() {
+  const existing = getHfToken();
+  if (existing) $id('hf-token-input').value = existing;
+  show($id('hf-modal'));
+  setTimeout(() => $id('hf-token-input').focus(), 80);
+}
+
+function closeHfModal() {
+  hide($id('hf-modal'));
+  $id('hf-token-input').value = '';
+}
+
+function initHfModal() {
+  $id('save-hf-btn').addEventListener('click', () => {
+    const key = $id('hf-token-input').value.trim();
+    if (!key || key.length < 8) { showToast('Enter a valid HuggingFace token.', 'warning'); return; }
+    localStorage.setItem(HF_TOKEN_KEY, key);
+    updateModePill();
+    showToast('HuggingFace token saved — face-preserving mode active!', 'success');
+    closeHfModal();
+  });
+
+  $id('clear-hf-btn').addEventListener('click', () => {
+    localStorage.removeItem(HF_TOKEN_KEY);
+    updateModePill();
+    showToast('Switched to free Pollinations mode.', 'info');
+    closeHfModal();
+  });
+
+  $id('hf-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeHfModal(); });
+  $id('hf-token-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $id('save-hf-btn').click();
+    if (e.key === 'Escape') closeHfModal();
+  });
 }
 
 // =============================================
@@ -1354,10 +1437,7 @@ function initFaq() {
         o.classList.remove('open');
         o.querySelector('.faq-answer').style.maxHeight = '0';
       });
-      if (!wasOpen) {
-        item.classList.add('open');
-        answer.style.maxHeight = answer.scrollHeight + 'px';
-      }
+      if (!wasOpen) { item.classList.add('open'); answer.style.maxHeight = answer.scrollHeight + 'px'; }
     });
   });
 }
@@ -1388,7 +1468,7 @@ function initScrollReveal() {
   }
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('reveal'); obs.unobserve(e.target); } });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
   $qsa('.will-reveal').forEach(el => obs.observe(el));
 }
 
@@ -1396,8 +1476,6 @@ function initScrollReveal() {
 // INIT
 // =============================================
 document.addEventListener('DOMContentLoaded', () => {
-  state.apiKey = resolveApiKey();
-
   initNav();
   initUpload();
   initPresets();
@@ -1406,12 +1484,10 @@ document.addEventListener('DOMContentLoaded', () => {
   initDownloadBtn();
   initHistory();
   initFaq();
-  initApiKeyModal();
+  initHfModal();
   initScrollReveal();
-
-  if (!state.apiKey) {
-    setTimeout(() => showToast('Configure your fal.ai API key to get started — click "API Key" in the nav.', 'info', 8000), 2200);
-  }
+  updateModePill();
+  updateTransformBtn();
 });
 </script>
 </body>
