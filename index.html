@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Transform any selfie into a professional corporate headshot in seconds. AI-powered headshot generator for LinkedIn, resume, and passport photos." />
+  <meta property="og:title" content="HeadshotAI — Professional Headshots in Seconds" />
+  <meta property="og:description" content="Transform any selfie into a professional corporate headshot powered by AI." />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.fal.run https://*.fal-cdn.com https://fal.media https://storage.googleapis.com https://v3.fal.media; connect-src 'self' https://fal.run https://*.fal.run;" />
+  <title>HeadshotAI — Professional Headshots in Seconds</title>
+  <style>
+    /* === CUSTOM PROPERTIES === */
+    :root {
+      --bg-primary: #0a0a0f;
+      --bg-secondary: #12121a;
+      --bg-tertiary: #1a1a28;
+      --surface-1: rgba(255,255,255,0.04);
+      --surface-2: rgba(255,255,255,0.08);
+      --accent-purple: #7c3aed;
+      --accent-purple-light: #a855f7;
+      --accent-purple-dim: rgba(124,58,237,0.15);
+      --accent-purple-glow: rgba(124,58,237,0.3);
+      --accent-gold: #f59e0b;
+      --accent-gold-light: #fbbf24;
+      --gradient-primary: linear-gradient(135deg,#7c3aed 0%,#f59e0b 100%);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #475569;
+      --glass-bg: rgba(255,255,255,0.05);
+      --glass-border: rgba(255,255,255,0.1);
+      --glass-blur: blur(20px);
+      --error: #ef4444;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px;
+      --radius-xl: 28px; --radius-full: 9999px;
+      --shadow-md: 0 4px 16px rgba(0,0,0,0.5);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,0.6);
+      --shadow-glow: 0 0 40px rgba(124,58,237,0.2);
+      --transition-fast: 150ms ease;
+      --transition-base: 250ms ease;
+      --transition-slow: 400ms ease;
+      --z-sticky: 100; --z-modal: 200; --z-toast: 300;
+      --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    }
+
+    /* === RESET === */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+    img{max-width:100%;display:block}
+    button{font-family:inherit;cursor:pointer;border:none;background:none}
+    a{color:inherit;text-decoration:none}
+    ul{list-style:none}
+    [hidden]{display:none!important}
+
+    /* === TYPOGRAPHY === */
+    .gradient-text{background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .section-tag{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-purple-light);background:var(--accent-purple-dim);border:1px solid rgba(124,58,237,.3);padding:2px 10px;border-radius:var(--radius-full);margin-bottom:16px}
+    .section-header{text-align:center;margin-bottom:48px}
+    .section-header h2{font-size:clamp(1.75rem,4vw,2.5rem);font-weight:800;letter-spacing:-.02em;margin-bottom:16px}
+    .section-header p{font-size:1.1rem;color:var(--text-secondary);max-width:520px;margin:0 auto}
+
+    /* === LAYOUT === */
+    .container{max-width:1200px;margin:0 auto;padding:0 24px}
+    section{padding:80px 0}
+
+    /* === GLASS CARD === */
+    .glass-card{background:var(--glass-bg);border:1px solid var(--glass-border);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.08)}
+
+    /* === BUTTONS === */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 24px;border-radius:var(--radius-full);font-size:.9375rem;font-weight:600;transition:all var(--transition-base);white-space:nowrap;cursor:pointer}
+    .btn-primary{background:var(--gradient-primary);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.35)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.5)}
+    .btn-primary:active{transform:translateY(0)}
+    .btn-secondary{background:var(--surface-1);color:var(--text-primary);border:1px solid var(--glass-border)}
+    .btn-secondary:hover{background:var(--surface-2);border-color:rgba(255,255,255,.2);transform:translateY(-1px)}
+    .btn-ghost{color:var(--text-secondary);padding:8px 16px}
+    .btn-ghost:hover{color:var(--text-primary)}
+    .btn-sm{padding:8px 16px;font-size:.875rem}
+    .btn-lg{padding:16px 40px;font-size:1.0625rem}
+    .btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none}
+
+    /* === NAV === */
+    #nav{position:fixed;top:0;left:0;right:0;z-index:var(--z-sticky);padding:16px 0;transition:all var(--transition-base)}
+    #nav.scrolled{background:rgba(10,10,15,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--glass-border);padding:12px 0}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+    .nav-logo{display:flex;align-items:center;gap:8px;font-size:1.25rem;font-weight:800;letter-spacing:-.02em}
+    .nav-logo-icon{width:36px;height:36px;background:var(--gradient-primary);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+    .nav-links{display:flex;align-items:center;gap:24px}
+    .nav-links a{font-size:.9rem;color:var(--text-secondary);transition:color var(--transition-fast)}
+    .nav-links a:hover{color:var(--text-primary)}
+    .nav-actions{display:flex;align-items:center;gap:12px}
+    .nav-hamburger{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
+    .nav-hamburger span{display:block;width:22px;height:2px;background:var(--text-primary);border-radius:2px}
+    .nav-mobile-menu{display:none;position:fixed;inset:0;background:rgba(10,10,15,.98);backdrop-filter:blur(20px);z-index:calc(var(--z-sticky) + 1);flex-direction:column;align-items:center;justify-content:center;gap:24px}
+    .nav-mobile-menu.open{display:flex}
+    .nav-mobile-menu a{font-size:1.5rem;font-weight:600}
+    .nav-mobile-close{position:absolute;top:24px;right:24px;font-size:1.5rem;color:var(--text-secondary);cursor:pointer;background:none;border:none}
+
+    /* === HERO === */
+    #hero{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;background:radial-gradient(ellipse at 20% 50%,rgba(124,58,237,.15) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(245,158,11,.08) 0%,transparent 50%),linear-gradient(180deg,#0a0a0f 0%,#0f0a1e 50%,#0a0a0f 100%);position:relative;overflow:hidden}
+    .hero-orb{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+    .hero-orb-1{width:600px;height:600px;background:rgba(124,58,237,.12);top:-200px;left:-100px;animation:orbFloat 18s ease-in-out infinite}
+    .hero-orb-2{width:500px;height:500px;background:rgba(245,158,11,.08);bottom:-100px;right:-100px;animation:orbFloat 22s ease-in-out infinite reverse}
+    .hero-orb-3{width:300px;height:300px;background:rgba(168,85,247,.08);top:40%;right:20%;animation:orbFloat 15s ease-in-out infinite 3s}
+    .hero-content{max-width:760px;position:relative;z-index:1}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:.8125rem;font-weight:600;color:var(--accent-gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.25);padding:2px 12px;border-radius:var(--radius-full);margin-bottom:24px}
+    .hero-badge .dot{width:6px;height:6px;background:var(--accent-gold);border-radius:50%;animation:pulse 2s ease infinite}
+    #hero h1{font-size:clamp(2.5rem,7vw,4.5rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:24px}
+    #hero p.hero-subtitle{font-size:clamp(1rem,2.5vw,1.25rem);color:var(--text-secondary);max-width:520px;margin-bottom:32px;line-height:1.7}
+    .hero-cta-group{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:48px}
+    .hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+    .hero-stat{display:flex;flex-direction:column}
+    .hero-stat-value{font-size:1.75rem;font-weight:800;letter-spacing:-.02em;background:var(--gradient-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-stat-label{font-size:.8125rem;color:var(--text-muted)}
+
+    /* === UPLOAD === */
+    #upload-section{background:var(--bg-secondary)}
+    .upload-card{max-width:700px;margin:0 auto;padding:32px}
+    #drop-zone{border:2px dashed rgba(255,255,255,.15);border-radius:var(--radius-lg);padding:48px 32px;text-align:center;cursor:pointer;transition:all var(--transition-base)}
+    #drop-zone:hover,#drop-zone.dragover{border-color:var(--accent-purple);background:rgba(124,58,237,.06)}
+    #drop-zone.dragover{transform:scale(1.01);box-shadow:0 0 0 4px rgba(124,58,237,.15)}
+    .drop-icon{width:64px;height:64px;background:var(--accent-purple-dim);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
+    .drop-zone-title{font-size:1.125rem;font-weight:700;margin-bottom:8px}
+    .drop-zone-subtitle{font-size:.875rem;color:var(--text-secondary);margin-bottom:20px}
+    .drop-zone-formats{font-size:.75rem;color:var(--text-muted);margin-top:16px}
+    .preview-image-wrap{position:relative;overflow:hidden;border-radius:var(--radius-lg)}
+    .preview-image-wrap img{width:100%;height:360px;object-fit:cover;border-radius:var(--radius-lg)}
+    .preview-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5) 0%,transparent 50%);border-radius:var(--radius-lg)}
+    .preview-meta{display:flex;align-items:center;justify-content:space-between;padding:16px 0 0;gap:16px;flex-wrap:wrap}
+    .preview-filename{font-size:.9rem;font-weight:600}
+    .preview-filesize{font-size:.8rem;color:var(--text-secondary)}
+    .upload-tips{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px;padding-top:24px;border-top:1px solid var(--glass-border)}
+    .upload-tip{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}
+    .upload-tip-icon{font-size:1.5rem;width:44px;height:44px;background:var(--surface-1);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+    .upload-tip-title{font-size:.8125rem;font-weight:600}
+    .upload-tip-desc{font-size:.75rem;color:var(--text-secondary)}
+
+    /* === PRESETS === */
+    #presets-section{background:var(--bg-primary)}
+    .presets-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:32px}
+    .preset-card{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:20px 16px;cursor:pointer;transition:all var(--transition-base);text-align:center;position:relative;overflow:hidden}
+    .preset-card:hover{border-color:var(--accent-purple-light);background:rgba(124,58,237,.08);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .preset-card.selected{border-color:var(--accent-purple);background:rgba(124,58,237,.12);box-shadow:0 0 0 1px var(--accent-purple),0 4px 20px rgba(124,58,237,.25)}
+    .preset-badge{position:absolute;top:8px;right:8px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-gold);background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);padding:2px 8px;border-radius:var(--radius-full)}
+    .preset-icon{font-size:2rem;margin-bottom:12px;display:block}
+    .preset-name{font-size:.875rem;font-weight:700;margin-bottom:4px}
+    .preset-desc{font-size:.75rem;color:var(--text-secondary);line-height:1.4}
+    .transform-btn-wrap{text-align:center}
+    #transform-btn{font-size:1.0625rem;padding:16px 40px}
+
+    /* === RESULT === */
+    #result-section{background:var(--bg-secondary)}
+    #loading-state{max-width:480px;margin:0 auto;text-align:center;padding:64px 0}
+    .spinner-ring{width:72px;height:72px;border:3px solid var(--surface-2);border-top-color:var(--accent-purple);border-right-color:var(--accent-gold);border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 24px}
+    .loading-title{font-size:1.375rem;font-weight:700;margin-bottom:8px}
+    #progress-label{font-size:.9rem;color:var(--text-secondary);margin-bottom:24px;min-height:1.5em;transition:all var(--transition-base)}
+    .progress-track{height:4px;background:var(--surface-2);border-radius:var(--radius-full);overflow:hidden;margin-bottom:32px}
+    #progress-bar{height:100%;width:0%;border-radius:var(--radius-full);background:linear-gradient(90deg,var(--accent-purple),var(--accent-gold),var(--accent-purple));background-size:200%;animation:shimmer 1.5s linear infinite;transition:width .8s cubic-bezier(.4,0,.2,1)}
+    .loading-steps{display:flex;justify-content:center;gap:12px}
+    .loading-step{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:.75rem;color:var(--text-muted);transition:color var(--transition-base)}
+    .loading-step.active{color:var(--accent-purple-light)}
+    .loading-step.done{color:var(--success)}
+    .step-dot{width:8px;height:8px;border-radius:50%;background:var(--surface-2);transition:background var(--transition-base)}
+    .loading-step.active .step-dot{background:var(--accent-purple)}
+    .loading-step.done .step-dot{background:var(--success)}
+    #result-display{max-width:800px;margin:0 auto}
+    .slider-container{position:relative;overflow:hidden;border-radius:var(--radius-lg);aspect-ratio:1;max-height:560px;user-select:none;box-shadow:var(--shadow-lg);cursor:ew-resize;background:var(--bg-tertiary)}
+    .slider-container img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    #before-img{z-index:1}
+    #after-img{z-index:2;clip-path:inset(0 50% 0 0)}
+    #slider-handle{position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);width:3px;background:#fff;z-index:10;pointer-events:none}
+    #slider-handle::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:44px;height:44px;background:#fff;border-radius:50%;box-shadow:0 2px 12px rgba(0,0,0,.4),0 0 0 3px rgba(124,58,237,.4)}
+    #slider-range{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize;z-index:20;-webkit-appearance:none}
+    #slider-range::-webkit-slider-thumb{-webkit-appearance:none;width:44px;height:9999px;cursor:ew-resize}
+    #slider-range::-moz-range-thumb{width:44px;height:9999px;border:none;border-radius:0;cursor:ew-resize}
+    .slider-label{position:absolute;top:12px;font-size:.6875rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.55);padding:2px 10px;border-radius:var(--radius-full);backdrop-filter:blur(6px);pointer-events:none}
+    .label-before{left:12px;z-index:3}
+    .label-after{right:12px;z-index:11}
+    .result-actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;justify-content:center}
+    .result-meta{text-align:center;margin-top:16px;font-size:.8125rem;color:var(--text-muted)}
+    #error-state{max-width:480px;margin:0 auto;text-align:center;padding:64px 0}
+    .error-icon{font-size:3rem;margin-bottom:16px}
+    .error-title{font-size:1.25rem;font-weight:700;margin-bottom:8px;color:var(--error)}
+    .error-message{color:var(--text-secondary);margin-bottom:24px}
+    .error-actions{display:flex;gap:12px;justify-content:center}
+
+    /* === EXAMPLES === */
+    #examples-section{background:var(--bg-primary)}
+    .examples-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    .example-card{border-radius:var(--radius-lg);overflow:hidden;background:var(--surface-1);border:1px solid var(--glass-border);transition:transform var(--transition-base),box-shadow var(--transition-base)}
+    .example-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-glow)}
+    .example-imgs{display:flex;height:200px}
+    .example-side{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:var(--bg-tertiary)}
+    .example-side.after-side{background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(245,158,11,.2))}
+    .example-side-label{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:.625rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.6);padding:2px 8px;border-radius:var(--radius-full);white-space:nowrap}
+    .example-emoji{font-size:3.5rem;line-height:1}
+    .example-divider{width:2px;background:linear-gradient(to bottom,transparent,rgba(255,255,255,.3),transparent);flex-shrink:0}
+    .example-info{padding:16px}
+    .example-title{font-size:.875rem;font-weight:700;margin-bottom:2px}
+    .example-subtitle{font-size:.75rem;color:var(--text-secondary)}
+
+    /* === HISTORY === */
+    #history-section{background:var(--bg-secondary)}
+    #history-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+    .history-card{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);overflow:hidden;transition:transform var(--transition-base)}
+    .history-card:hover{transform:translateY(-2px)}
+    .history-thumb{aspect-ratio:1;overflow:hidden;background:var(--bg-tertiary)}
+    .history-thumb img{width:100%;height:100%;object-fit:cover}
+    .history-meta{padding:12px}
+    .history-preset{font-size:.8125rem;font-weight:600;margin-bottom:2px}
+    .history-date{font-size:.75rem;color:var(--text-secondary);margin-bottom:12px}
+    .history-actions{display:flex;gap:8px}
+    .history-actions .btn{flex:1;font-size:.75rem;padding:4px 8px}
+    #history-empty{text-align:center;padding:48px 0;color:var(--text-muted)}
+    .history-empty-icon{font-size:3rem;margin-bottom:16px}
+    .history-footer{display:flex;justify-content:center}
+
+    /* === FAQ === */
+    #faq-section{background:var(--bg-primary)}
+    .faq-list{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+    .faq-item{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-lg);overflow:hidden;transition:border-color var(--transition-base)}
+    .faq-item.open{border-color:rgba(124,58,237,.4)}
+    .faq-question{width:100%;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;text-align:left;font-size:.9375rem;font-weight:600;color:var(--text-primary);cursor:pointer;gap:16px}
+    .faq-chevron{flex-shrink:0;width:20px;height:20px;color:var(--text-muted);transition:transform var(--transition-base),color var(--transition-base)}
+    .faq-item.open .faq-chevron{transform:rotate(180deg);color:var(--accent-purple-light)}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+    .faq-item.open .faq-answer{padding-bottom:20px}
+    .faq-answer-inner{padding:0 24px;font-size:.9rem;color:var(--text-secondary);line-height:1.7}
+    .faq-answer-inner a{color:var(--accent-purple-light);text-decoration:underline}
+
+    /* === FOOTER === */
+    #footer{background:var(--bg-secondary);border-top:1px solid var(--glass-border);padding:64px 0 32px}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:48px}
+    .footer-brand p{color:var(--text-secondary);font-size:.9rem;margin-top:12px;max-width:280px;line-height:1.7}
+    .footer-col h4{font-size:.875rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:16px}
+    .footer-col ul{display:flex;flex-direction:column;gap:12px}
+    .footer-col a{font-size:.9rem;color:var(--text-secondary);transition:color var(--transition-fast)}
+    .footer-col a:hover{color:var(--text-primary)}
+    .footer-bottom{border-top:1px solid var(--glass-border);padding-top:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+    .footer-bottom p{font-size:.8125rem;color:var(--text-muted)}
+    .footer-bottom a{color:var(--accent-purple-light)}
+
+    /* === MODAL === */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--transition-base) ease}
+    .modal-card{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:32px;max-width:480px;width:100%;box-shadow:var(--shadow-lg);animation:slideUp var(--transition-slow) ease}
+    .modal-icon{width:56px;height:56px;background:var(--accent-purple-dim);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
+    .modal-card h2{font-size:1.375rem;font-weight:800;margin-bottom:8px}
+    .modal-card>p{font-size:.9rem;color:var(--text-secondary);margin-bottom:24px;line-height:1.6}
+    .modal-card>p a{color:var(--accent-purple-light);text-decoration:underline}
+    .input-group{margin-bottom:20px}
+    .input-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:8px}
+    .input-field{width:100%;background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:12px 16px;color:var(--text-primary);font-size:.9375rem;font-family:var(--font-sans);transition:border-color var(--transition-base);outline:none}
+    .input-field:focus{border-color:var(--accent-purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
+    .input-field::placeholder{color:var(--text-muted)}
+    .modal-actions{display:flex;gap:12px}
+    .modal-security-note{margin-top:20px;padding:12px 16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:var(--radius-md);font-size:.8rem;color:var(--text-secondary);line-height:1.5}
+    .modal-security-note strong{color:var(--accent-gold)}
+
+    /* === TOASTS === */
+    #toast-container{position:fixed;top:24px;right:24px;z-index:var(--z-toast);display:flex;flex-direction:column;gap:12px;pointer-events:none}
+    .toast{display:flex;align-items:flex-start;gap:12px;background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-lg);padding:12px 16px;max-width:360px;box-shadow:var(--shadow-lg);animation:toastIn .3s ease forwards;pointer-events:all}
+    .toast.leaving{animation:toastOut .3s ease forwards}
+    .toast-icon{font-size:1.125rem;flex-shrink:0;margin-top:1px}
+    .toast-body{flex:1}
+    .toast-title{font-size:.875rem;font-weight:700;margin-bottom:1px}
+    .toast-msg{font-size:.8125rem;color:var(--text-secondary)}
+    .toast-close{color:var(--text-muted);font-size:1rem;flex-shrink:0;padding:2px;cursor:pointer}
+    .toast-close:hover{color:var(--text-primary)}
+    .toast.success{border-color:rgba(34,197,94,.3)}
+    .toast.error{border-color:rgba(239,68,68,.3)}
+    .toast.warning{border-color:rgba(245,158,11,.3)}
+
+    /* === ANIMATIONS === */
+    @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-30px) scale(1.05)}66%{transform:translate(-25px,20px) scale(.97)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    @keyframes shimmer{from{background-position:200% center}to{background-position:-200% center}}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+    @keyframes fadeInUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes toastIn{from{opacity:0;transform:translateX(110%)}to{opacity:1;transform:translateX(0)}}
+    @keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(110%)}}
+    .will-reveal{opacity:0}
+    .reveal{animation:fadeInUp .5s ease forwards}
+
+    /* === RESPONSIVE === */
+    @media(max-width:1024px){
+      .presets-grid{grid-template-columns:repeat(3,1fr)}
+      .examples-grid{grid-template-columns:repeat(2,1fr)}
+      .footer-grid{grid-template-columns:1fr 1fr}
+      .footer-brand{grid-column:1/-1}
+    }
+    @media(max-width:768px){
+      .nav-links{display:none}
+      .nav-hamburger{display:flex}
+      .nav-actions .btn-secondary{display:none}
+      section{padding:64px 0}
+      .presets-grid{grid-template-columns:repeat(2,1fr)}
+      .examples-grid{grid-template-columns:1fr}
+      .upload-tips{grid-template-columns:1fr;gap:12px}
+      .footer-grid{grid-template-columns:1fr;gap:32px}
+      .footer-bottom{flex-direction:column;text-align:center}
+      #history-grid{grid-template-columns:repeat(2,1fr)}
+      .hero-stats{gap:24px}
+    }
+    @media(max-width:480px){
+      .container{padding:0 16px}
+      .presets-grid{grid-template-columns:1fr 1fr}
+      .hero-cta-group{flex-direction:column}
+      .hero-cta-group .btn{width:100%;justify-content:center}
+      .modal-actions{flex-direction:column}
+      .result-actions{flex-direction:column}
+      .result-actions .btn{width:100%}
+      .upload-card{padding:20px}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ======= NAV ======= -->
+<nav id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="nav-logo-icon">✨</div>
+        HeadshotAI
+      </a>
+      <ul class="nav-links">
+        <li><a href="#upload-section">Upload</a></li>
+        <li><a href="#presets-section">Styles</a></li>
+        <li><a href="#examples-section">Examples</a></li>
+        <li><a href="#faq-section">FAQ</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="btn btn-secondary btn-sm" onclick="openApiKeyModal()">⚙️ API Key</button>
+        <a href="#upload-section" class="btn btn-primary btn-sm">Get Started</a>
+        <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu -->
+<div class="nav-mobile-menu" id="nav-mobile-menu">
+  <button class="nav-mobile-close" onclick="closeMobileMenu()">✕</button>
+  <a href="#upload-section" onclick="closeMobileMenu()">Upload Photo</a>
+  <a href="#presets-section" onclick="closeMobileMenu()">Style Presets</a>
+  <a href="#examples-section" onclick="closeMobileMenu()">Examples</a>
+  <a href="#history-section" onclick="closeMobileMenu()">My Headshots</a>
+  <a href="#faq-section" onclick="closeMobileMenu()">FAQ</a>
+  <button class="btn btn-primary" onclick="closeMobileMenu();openApiKeyModal()">⚙️ Configure API Key</button>
+</div>
+
+<!-- ======= HERO ======= -->
+<section id="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        AI-Powered · No Photographer Needed
+      </div>
+      <h1>Professional<br><span class="gradient-text">Headshots</span><br>in Seconds</h1>
+      <p class="hero-subtitle">
+        Upload any selfie and AI transforms it into a studio-quality corporate
+        headshot. Perfect for LinkedIn, resumes, and passports.
+      </p>
+      <div class="hero-cta-group">
+        <a href="#upload-section" class="btn btn-primary btn-lg">✨ Transform My Photo</a>
+        <a href="#examples-section" class="btn btn-secondary btn-lg">See Examples</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-value">10K+</span><span class="hero-stat-label">Headshots generated</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">&lt;30s</span><span class="hero-stat-label">Average generation time</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">5</span><span class="hero-stat-label">Professional styles</span></div>
+        <div class="hero-stat"><span class="hero-stat-value">Free*</span><span class="hero-stat-label">With your API key</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= UPLOAD ======= -->
+<section id="upload-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">📸 Step 1</div>
+      <h2>Upload Your <span class="gradient-text">Portrait</span></h2>
+      <p>Choose a clear, front-facing photo. Better input means a more stunning result.</p>
+    </div>
+    <div class="upload-card glass-card will-reveal">
+      <div id="drop-zone" role="button" tabindex="0" aria-label="Upload photo">
+        <div class="drop-icon">📷</div>
+        <p class="drop-zone-title">Drop your photo here</p>
+        <p class="drop-zone-subtitle">or click to browse files</p>
+        <button class="btn btn-secondary" id="browse-btn" type="button">Choose Photo</button>
+        <input type="file" id="file-input" accept="image/jpeg,image/jpg,image/png,image/webp" hidden>
+        <p class="drop-zone-formats">JPG, PNG, WEBP · Max 20MB · Recommended: 512×512px or larger</p>
+      </div>
+      <div id="upload-preview" hidden>
+        <div class="preview-image-wrap">
+          <img id="preview-img" src="" alt="Your uploaded photo">
+          <div class="preview-overlay"></div>
+        </div>
+        <div class="preview-meta">
+          <div>
+            <div class="preview-filename" id="preview-filename">photo.jpg</div>
+            <div class="preview-filesize" id="preview-filesize">2.4 MB</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" id="change-photo-btn">↩ Change Photo</button>
+        </div>
+      </div>
+      <div class="upload-tips">
+        <div class="upload-tip">
+          <div class="upload-tip-icon">💡</div>
+          <span class="upload-tip-title">Good Lighting</span>
+          <span class="upload-tip-desc">Well-lit face, avoid harsh shadows</span>
+        </div>
+        <div class="upload-tip">
+          <div class="upload-tip-icon">🎯</div>
+          <span class="upload-tip-title">Face Forward</span>
+          <span class="upload-tip-desc">Look directly at camera</span>
+        </div>
+        <div class="upload-tip">
+          <div class="upload-tip-icon">🖼️</div>
+          <span class="upload-tip-title">High Resolution</span>
+          <span class="upload-tip-desc">512×512px or larger</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRESETS ======= -->
+<section id="presets-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">🎨 Step 2</div>
+      <h2>Choose Your <span class="gradient-text">Style</span></h2>
+      <p>Select the professional look that matches your goal.</p>
+    </div>
+    <div class="presets-grid will-reveal">
+      <div class="preset-card" data-preset="male_formal" role="button" tabindex="0">
+        <span class="preset-badge">Popular</span>
+        <span class="preset-icon">👔</span>
+        <div class="preset-name">Male Formal</div>
+        <div class="preset-desc">Navy suit, white shirt &amp; tie</div>
+      </div>
+      <div class="preset-card" data-preset="female_professional" role="button" tabindex="0">
+        <span class="preset-icon">👩‍💼</span>
+        <div class="preset-name">Female Pro</div>
+        <div class="preset-desc">Tailored blazer, polished look</div>
+      </div>
+      <div class="preset-card" data-preset="neutral_corporate" role="button" tabindex="0">
+        <span class="preset-icon">🏢</span>
+        <div class="preset-name">Corporate</div>
+        <div class="preset-desc">Gender-neutral business attire</div>
+      </div>
+      <div class="preset-card" data-preset="passport" role="button" tabindex="0">
+        <span class="preset-icon">🪪</span>
+        <div class="preset-name">Passport / ID</div>
+        <div class="preset-desc">White background, formal style</div>
+      </div>
+      <div class="preset-card" data-preset="linkedin" role="button" tabindex="0">
+        <span class="preset-icon">💼</span>
+        <div class="preset-name">LinkedIn</div>
+        <div class="preset-desc">Warm smile, approachable look</div>
+      </div>
+    </div>
+    <div class="transform-btn-wrap will-reveal">
+      <button class="btn btn-primary btn-lg" id="transform-btn" disabled>✨ Transform My Headshot</button>
+      <p style="margin-top:12px;font-size:.875rem;color:var(--text-muted)" id="transform-hint">Upload a photo and select a style to continue</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= RESULT ======= -->
+<section id="result-section" hidden>
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">✨ Result</div>
+      <h2>Your Professional <span class="gradient-text">Headshot</span></h2>
+    </div>
+    <div id="loading-state">
+      <div class="spinner-ring"></div>
+      <p class="loading-title">Generating your headshot…</p>
+      <p id="progress-label">Initializing AI model…</p>
+      <div class="progress-track"><div id="progress-bar"></div></div>
+      <div class="loading-steps">
+        <div class="loading-step" id="step-1"><div class="step-dot"></div><span>Analyzing</span></div>
+        <div class="loading-step" id="step-2"><div class="step-dot"></div><span>Styling</span></div>
+        <div class="loading-step" id="step-3"><div class="step-dot"></div><span>Enhancing</span></div>
+        <div class="loading-step" id="step-4"><div class="step-dot"></div><span>Finishing</span></div>
+      </div>
+    </div>
+    <div id="error-state" hidden>
+      <div class="error-icon">⚠️</div>
+      <p class="error-title">Generation Failed</p>
+      <p class="error-message" id="error-message">Something went wrong. Please try again.</p>
+      <div class="error-actions">
+        <button class="btn btn-primary" id="retry-btn">↺ Try Again</button>
+        <button class="btn btn-secondary" onclick="resetToUpload()">← Change Photo</button>
+      </div>
+    </div>
+    <div id="result-display" hidden>
+      <div class="slider-container" id="slider-container">
+        <img id="before-img" src="" alt="Original photo">
+        <img id="after-img" src="" alt="AI transformed headshot">
+        <div id="slider-handle"></div>
+        <span class="slider-label label-before">Before</span>
+        <span class="slider-label label-after">After</span>
+        <input type="range" id="slider-range" min="0" max="100" value="50" aria-label="Comparison slider">
+      </div>
+      <div class="result-actions">
+        <button class="btn btn-primary btn-lg" id="download-btn">⬇ Download Headshot</button>
+        <button class="btn btn-secondary" id="regenerate-btn">↺ Regenerate</button>
+        <button class="btn btn-ghost" onclick="resetToUpload()">← New Photo</button>
+      </div>
+      <p class="result-meta" id="result-meta"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= EXAMPLES ======= -->
+<section id="examples-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">🌟 Examples</div>
+      <h2>See What's <span class="gradient-text">Possible</span></h2>
+      <p>AI transformations that preserve your identity while delivering a polished professional look.</p>
+    </div>
+    <div class="examples-grid">
+      <div class="example-card will-reveal">
+        <div class="example-imgs">
+          <div class="example-side"><span class="example-emoji">🧑</span><span class="example-side-label">Before</span></div>
+          <div class="example-divider"></div>
+          <div class="example-side after-side"><span class="example-emoji">👔</span><span class="example-side-label">After</span></div>
+        </div>
+        <div class="example-info">
+          <p class="example-title">Male Formal Suit</p>
+          <p class="example-subtitle">Casual selfie → LinkedIn profile</p>
+        </div>
+      </div>
+      <div class="example-card will-reveal">
+        <div class="example-imgs">
+          <div class="example-side"><span class="example-emoji">👩</span><span class="example-side-label">Before</span></div>
+          <div class="example-divider"></div>
+          <div class="example-side after-side"><span class="example-emoji">👩‍💼</span><span class="example-side-label">After</span></div>
+        </div>
+        <div class="example-info">
+          <p class="example-title">Female Professional</p>
+          <p class="example-subtitle">Smartphone photo → Executive portrait</p>
+        </div>
+      </div>
+      <div class="example-card will-reveal">
+        <div class="example-imgs">
+          <div class="example-side"><span class="example-emoji">🧑‍🦱</span><span class="example-side-label">Before</span></div>
+          <div class="example-divider"></div>
+          <div class="example-side after-side"><span class="example-emoji">🪪</span><span class="example-side-label">After</span></div>
+        </div>
+        <div class="example-info">
+          <p class="example-title">Passport / ID Photo</p>
+          <p class="example-subtitle">Casual portrait → Official ID style</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= HISTORY ======= -->
+<section id="history-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">🕒 History</div>
+      <h2>Your Recent <span class="gradient-text">Headshots</span></h2>
+      <p>Your last 10 generations are saved in your browser. No account required.</p>
+    </div>
+    <div id="history-grid"></div>
+    <div id="history-empty">
+      <div class="history-empty-icon">📂</div>
+      <p style="font-size:1.1rem;font-weight:600;margin-bottom:8px">No headshots yet</p>
+      <p style="color:var(--text-secondary);font-size:.9rem">Your generated headshots will appear here</p>
+    </div>
+    <div class="history-footer" id="history-footer" hidden>
+      <button class="btn btn-ghost btn-sm" id="clear-history-btn">🗑 Clear All History</button>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FAQ ======= -->
+<section id="faq-section">
+  <div class="container">
+    <div class="section-header will-reveal">
+      <div class="section-tag">❓ FAQ</div>
+      <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
+    </div>
+    <div class="faq-list" id="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">How does HeadshotAI work?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">HeadshotAI uses advanced image-to-image AI (powered by <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a>) to transform your casual photo into a professional headshot. The AI analyzes your facial features, preserves your identity, and applies the chosen professional style with studio-quality lighting and background.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Do I need to pay to use this?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">This app is completely free and open-source. You only pay for your own <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> API usage — typically a few cents per image. New accounts include free credits to get started.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Is my API key safe?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Your key is stored only in your browser's localStorage and is sent directly from your browser to fal.ai — never through any third-party server. We recommend creating a <strong>scoped key</strong> on the fal.ai dashboard limited to only the models this app uses, and setting a spending limit. Never commit a real API key to a public GitHub repository.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">What photo gives the best results?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Use a clear, well-lit, front-facing photo where your face is clearly visible. Aim for at least 512×512px. Avoid blurry images, extreme angles, hats covering your face, or heavy filters. Natural or soft indoor lighting works best.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Will it change my appearance?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">The AI is designed to preserve your facial identity. It changes your clothing, background, and lighting to match the chosen style while keeping your face recognizable. Minor lighting enhancements may be applied.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">How long does generation take?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Most headshots generate in 15–40 seconds, depending on server load. fal.ai's GPU-accelerated infrastructure is optimized for fast inference.</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Can I use the result commercially?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Generated images are yours to use, subject to <a href="https://fal.ai/terms" target="_blank" rel="noopener">fal.ai's terms of service</a>. Since you're generating a headshot of yourself, the result is suitable for personal and professional use (LinkedIn, resumes, company profiles, etc.).</div></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">Where is my data stored?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">This app stores thumbnails of recent generations in your browser's localStorage only. Your photos are sent to fal.ai per their <a href="https://fal.ai/privacy" target="_blank" rel="noopener">privacy policy</a>. No data is stored on any server we operate — this is a fully static, serverless application.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer id="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><div class="nav-logo-icon">✨</div>HeadshotAI</a>
+        <p>Transform any selfie into a professional corporate headshot in seconds. Powered by AI, designed for everyone.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#upload-section">Upload Photo</a></li>
+          <li><a href="#presets-section">Style Presets</a></li>
+          <li><a href="#examples-section">Examples</a></li>
+          <li><a href="#history-section">My Headshots</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Resources</h4>
+        <ul>
+          <li><a href="#faq-section">FAQ</a></li>
+          <li><a href="https://fal.ai" target="_blank" rel="noopener">fal.ai API</a></li>
+          <li><a href="https://github.com/mikeolofernes/photogenerator" target="_blank" rel="noopener">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 HeadshotAI. Open-source, free to use.</p>
+      <p>Powered by <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> · Hosted on GitHub Pages</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ======= API KEY MODAL ======= -->
+<div id="api-key-modal" class="modal-overlay" hidden>
+  <div class="modal-card">
+    <div class="modal-icon">🔑</div>
+    <h2>Enter Your API Key</h2>
+    <p>
+      This app uses <a href="https://fal.ai" target="_blank" rel="noopener">fal.ai</a> to generate headshots.
+      Sign up free and get your API key from the
+      <a href="https://fal.ai/dashboard/keys" target="_blank" rel="noopener">fal.ai dashboard</a>.
+    </p>
+    <div class="input-group">
+      <label for="api-key-input" class="input-label">fal.ai API Key</label>
+      <input type="password" id="api-key-input" class="input-field"
+        placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:..." autocomplete="off" spellcheck="false">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" id="save-api-key-btn" style="flex:1">Save &amp; Continue</button>
+      <button class="btn btn-secondary" id="cancel-api-key-btn">Cancel</button>
+    </div>
+    <div class="modal-security-note">
+      <strong>⚠️ Security note:</strong> Your key is stored only in your browser's localStorage and sent directly to fal.ai. Never commit a real API key to a public GitHub repository.
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container" aria-live="polite"></div>
+
+<!-- ======= JAVASCRIPT ======= -->
+<script>
+'use strict';
+
+// =============================================
+// CONFIG — swap provider or endpoint here
+// =============================================
+const API_KEY       = ''; // leave empty; user provides key via modal
+const FAL_ENDPOINT  = 'https://fal.run/fal-ai/flux/dev/image-to-image';
+const MAX_HISTORY   = 10;
+const MAX_IMG_DIM   = 1024;
+const JPEG_QUALITY  = 0.88;
+const THUMB_SIZE    = 240;
+const THUMB_QUALITY = 0.72;
+
+// =============================================
+// PRESETS
+// =============================================
+const PRESETS = {
+  male_formal: {
+    name: 'Male Formal Suit',
+    strength: 0.65,
+    prompt: 'professional corporate headshot portrait of a man, wearing a well-fitted navy blue or charcoal business suit, crisp white dress shirt, silk tie, clean professional look, soft studio lighting with catchlights, neutral light gray gradient background, sharp focus on face, skin retouching, confident expression, LinkedIn profile photo quality, photorealistic, 8K',
+    negativePrompt: 'cartoon, illustration, painting, anime, casual clothing, t-shirt, hoodie, outdoor background, busy background, text, watermark, blurry, low quality, distorted face, extra fingers, deformed, ugly, multiple people, hat',
+  },
+  female_professional: {
+    name: 'Female Professional',
+    strength: 0.65,
+    prompt: 'professional corporate headshot portrait of a woman, wearing an elegant tailored blazer in navy or black, professional blouse, polished appearance, soft studio lighting with fill light, neutral warm gradient background, sharp focus on face, natural makeup, confident warm expression, LinkedIn profile photo quality, photorealistic, 8K',
+    negativePrompt: 'cartoon, illustration, painting, anime, casual, t-shirt, outdoor background, busy background, text, watermark, blurry, low quality, distorted face, extra fingers, deformed, multiple people, hat',
+  },
+  neutral_corporate: {
+    name: 'Neutral Corporate',
+    strength: 0.60,
+    prompt: 'professional corporate headshot portrait, wearing a sleek modern business blazer in dark gray or navy, gender-neutral professional appearance, clean minimal studio lighting, soft white or light gray background, sharp focus on face, natural professional expression, modern headshot, photorealistic, 8K',
+    negativePrompt: 'cartoon, illustration, anime, casual, outdoor, busy background, text, watermark, blurry, low quality, distorted, deformed, multiple people',
+  },
+  passport: {
+    name: 'Passport / ID',
+    strength: 0.55,
+    prompt: 'official passport style portrait photo, plain white background, person looking directly at camera, neutral closed-mouth expression, eyes open and alert, professional formal clothing visible at shoulders, even flat studio lighting, no shadows on background, centered face, sharp focus, photorealistic, government ID quality',
+    negativePrompt: 'cartoon, illustration, smile showing teeth, looking away, tilted head, artistic lighting, colored background, deep shadows, watermark, blurry, low quality, multiple people, sunglasses',
+  },
+  linkedin: {
+    name: 'LinkedIn Optimized',
+    strength: 0.65,
+    prompt: 'LinkedIn profile headshot portrait, professional business casual attire, smart blazer or jacket, warm confident approachable smile, trustworthy expression, soft natural studio lighting, blurred bokeh gradient background in warm gray or blue-gray tones, face sharp and well-lit, skin retouching, professional headshot quality, photorealistic, 8K',
+    negativePrompt: 'cartoon, illustration, casual t-shirt, outdoor background, busy distracting background, text, watermark, blurry, low quality, distorted face, tired expression, harsh shadows, multiple people',
+  },
+};
+
+// =============================================
+// STATE
+// =============================================
+const state = {
+  uploadedFile: null,
+  compressedDataUrl: null,
+  selectedPreset: null,
+  isGenerating: false,
+  apiKey: null,
+  progressTimers: [],
+};
+
+// =============================================
+// DOM UTILS
+// =============================================
+const $id  = id  => document.getElementById(id);
+const $qs  = (s, ctx = document) => ctx.querySelector(s);
+const $qsa = (s, ctx = document) => [...ctx.querySelectorAll(s)];
+const show = el => el && el.removeAttribute('hidden');
+const hide = el => el && el.setAttribute('hidden', '');
+
+// =============================================
+// TOAST SYSTEM
+// =============================================
+const TOAST_META = {
+  info:    { icon: 'ℹ️',  title: 'Info' },
+  success: { icon: '✅', title: 'Success' },
+  error:   { icon: '❌', title: 'Error' },
+  warning: { icon: '⚠️', title: 'Warning' },
+};
+
+function showToast(message, type = 'info', duration = 4500) {
+  const { icon, title } = TOAST_META[type] || TOAST_META.info;
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icon}</span><div class="toast-body"><div class="toast-title">${title}</div><div class="toast-msg">${message}</div></div><button class="toast-close" aria-label="Dismiss">✕</button>`;
+  t.querySelector('.toast-close').onclick = () => dismissToast(t);
+  $id('toast-container').appendChild(t);
+  if (duration > 0) setTimeout(() => dismissToast(t), duration);
+  return t;
+}
+
+function dismissToast(t) {
+  if (!t || !t.parentElement) return;
+  t.classList.add('leaving');
+  setTimeout(() => t.remove(), 300);
+}
+
+// =============================================
+// IMAGE COMPRESSION
+// =============================================
+function compressImage(file, maxDim = MAX_IMG_DIM, quality = JPEG_QUALITY) {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        const r = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * r); height = Math.round(height * r);
+      }
+      const c = document.createElement('canvas');
+      c.width = width; c.height = height;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Failed to load image')); };
+    img.src = url;
+  });
+}
+
+function compressDataUrl(dataUrl, maxDim = THUMB_SIZE, quality = THUMB_QUALITY) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        const r = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * r); height = Math.round(height * r);
+      }
+      const c = document.createElement('canvas');
+      c.width = width; c.height = height;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
+async function fetchAsDataUrl(url) {
+  try {
+    const resp = await fetch(url);
+    const blob = await resp.blob();
+    return new Promise(resolve => {
+      const r = new FileReader();
+      r.onload = e => resolve(e.target.result);
+      r.readAsDataURL(blob);
+    });
+  } catch { return null; }
+}
+
+function formatBytes(b) {
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+// =============================================
+// UPLOAD HANDLING
+// =============================================
+function initUpload() {
+  const zone    = $id('drop-zone');
+  const input   = $id('file-input');
+  const browse  = $id('browse-btn');
+  const change  = $id('change-photo-btn');
+
+  browse.addEventListener('click', e => { e.stopPropagation(); input.click(); });
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); } });
+  input.addEventListener('change', e => { if (e.target.files[0]) handleFileSelect(e.target.files[0]); });
+  change.addEventListener('click', resetUpload);
+
+  let dragCnt = 0;
+  zone.addEventListener('dragenter', e => { e.preventDefault(); if (++dragCnt === 1) zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => { if (--dragCnt <= 0) { dragCnt = 0; zone.classList.remove('dragover'); } });
+  zone.addEventListener('dragover', e => e.preventDefault());
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); dragCnt = 0; zone.classList.remove('dragover');
+    const f = e.dataTransfer?.files[0];
+    if (f) handleFileSelect(f);
+  });
+}
+
+async function handleFileSelect(file) {
+  if (!validateFile(file)) return;
+  const toast = showToast('Processing image…', 'info', 0);
+  try {
+    const compressed = await compressImage(file);
+    state.uploadedFile = file;
+    state.compressedDataUrl = compressed;
+    dismissToast(toast);
+    $id('preview-img').src = compressed;
+    $id('preview-filename').textContent = file.name;
+    $id('preview-filesize').textContent = formatBytes(file.size);
+    hide($id('drop-zone'));
+    show($id('upload-preview'));
+    updateTransformBtn();
+    showToast('Photo ready! Now select a style.', 'success');
+  } catch (err) {
+    dismissToast(toast);
+    showToast('Could not process image. Try a different file.', 'error');
+  }
+}
+
+function validateFile(file) {
+  if (!['image/jpeg','image/jpg','image/png','image/webp'].includes(file.type)) {
+    showToast('Please upload a JPG, PNG, or WEBP image.', 'error'); return false;
+  }
+  if (file.size > 20 * 1024 * 1024) {
+    showToast('File too large. Maximum size is 20MB.', 'error'); return false;
+  }
+  return true;
+}
+
+function resetUpload() {
+  state.uploadedFile = null;
+  state.compressedDataUrl = null;
+  $id('file-input').value = '';
+  $id('preview-img').src = '';
+  hide($id('upload-preview'));
+  show($id('drop-zone'));
+  updateTransformBtn();
+}
+
+function resetToUpload() {
+  hide($id('result-section'));
+  resetUpload();
+  $id('upload-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// =============================================
+// PRESET SELECTION
+// =============================================
+function initPresets() {
+  $qsa('.preset-card').forEach(card => {
+    card.addEventListener('click', () => selectPreset(card.dataset.preset));
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPreset(card.dataset.preset); }
+    });
+  });
+}
+
+function selectPreset(key) {
+  if (!PRESETS[key]) return;
+  state.selectedPreset = key;
+  $qsa('.preset-card').forEach(c => c.classList.toggle('selected', c.dataset.preset === key));
+  updateTransformBtn();
+}
+
+function updateTransformBtn() {
+  const btn  = $id('transform-btn');
+  const hint = $id('transform-hint');
+  const ok   = !!state.compressedDataUrl && !!state.selectedPreset;
+  btn.disabled = !ok;
+  if (!state.compressedDataUrl && !state.selectedPreset) hint.textContent = 'Upload a photo and select a style to continue';
+  else if (!state.compressedDataUrl) hint.textContent = 'Upload a photo to continue';
+  else if (!state.selectedPreset) hint.textContent = 'Select a style to continue';
+  else hint.textContent = `Ready — "${PRESETS[state.selectedPreset].name}"`;
+}
+
+// =============================================
+// API KEY MANAGEMENT
+// =============================================
+let _pendingAfterKey = false;
+
+function resolveApiKey() {
+  if (API_KEY && API_KEY.length > 20 && !API_KEY.includes('YOUR')) return API_KEY;
+  return localStorage.getItem('headshot_api_key') || null;
+}
+
+function openApiKeyModal(pending = false) {
+  _pendingAfterKey = pending;
+  const k = resolveApiKey();
+  if (k) $id('api-key-input').value = k;
+  show($id('api-key-modal'));
+  setTimeout(() => $id('api-key-input').focus(), 80);
+}
+
+function closeApiKeyModal() {
+  hide($id('api-key-modal'));
+  $id('api-key-input').value = '';
+}
+
+function saveApiKey(key) {
+  key = (key || '').trim();
+  if (key.length < 10) { showToast('Please enter a valid API key.', 'warning'); return false; }
+  localStorage.setItem('headshot_api_key', key);
+  state.apiKey = key;
+  showToast('API key saved!', 'success');
+  return true;
+}
+
+function initApiKeyModal() {
+  $id('save-api-key-btn').addEventListener('click', () => {
+    if (saveApiKey($id('api-key-input').value)) {
+      closeApiKeyModal();
+      if (_pendingAfterKey) { _pendingAfterKey = false; generateHeadshot(); }
+    }
+  });
+  $id('cancel-api-key-btn').addEventListener('click', closeApiKeyModal);
+  $id('api-key-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeApiKeyModal(); });
+  $id('api-key-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') $id('save-api-key-btn').click();
+    if (e.key === 'Escape') closeApiKeyModal();
+  });
+}
+
+// =============================================
+// AI GENERATION
+// =============================================
+function initTransformBtn() {
+  $id('transform-btn').addEventListener('click', () => {
+    if (state.isGenerating) return;
+    state.apiKey = resolveApiKey();
+    if (!state.apiKey) { openApiKeyModal(true); return; }
+    generateHeadshot();
+  });
+  $id('retry-btn').addEventListener('click', () => {
+    state.apiKey = resolveApiKey();
+    if (!state.apiKey) { openApiKeyModal(true); return; }
+    generateHeadshot();
+  });
+}
+
+async function generateHeadshot() {
+  if (state.isGenerating) return;
+  if (!state.compressedDataUrl || !state.selectedPreset) {
+    showToast('Upload a photo and select a style first.', 'warning'); return;
+  }
+  state.apiKey = resolveApiKey();
+  if (!state.apiKey) { openApiKeyModal(true); return; }
+
+  state.isGenerating = true;
+  const t0 = Date.now();
+
+  show($id('result-section'));
+  hide($id('error-state'));
+  hide($id('result-display'));
+  show($id('loading-state'));
+  $id('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  startFakeProgress();
+
+  try {
+    const preset = PRESETS[state.selectedPreset];
+    const outputUrl = await retryWithBackoff(
+      () => callFalAPI(state.compressedDataUrl, preset, state.apiKey), 3, 1500
+    );
+
+    clearProgressTimers();
+    updateProgress(100, 'Complete! ✨');
+    await sleep(350);
+    await handleSuccess(outputUrl, Date.now() - t0);
+
+  } catch (err) {
+    clearProgressTimers();
+    handleError(err);
+  } finally {
+    state.isGenerating = false;
+  }
+}
+
+async function callFalAPI(imageDataUrl, preset, apiKey) {
+  const resp = await fetch(FAL_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Authorization': `Key ${apiKey}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      image_url: imageDataUrl,
+      prompt: preset.prompt,
+      negative_prompt: preset.negativePrompt,
+      num_inference_steps: 28,
+      guidance_scale: 3.5,
+      strength: preset.strength,
+      num_images: 1,
+      output_format: 'jpeg',
+      enable_safety_checker: true,
+    }),
+  });
+
+  if (resp.status === 401) {
+    const e = new Error('Invalid API key. Please check and re-enter.'); e.code = 'INVALID_KEY'; throw e;
+  }
+  if (resp.status === 422) {
+    const e = new Error('Image could not be processed. Try a different photo.'); e.code = 'BAD_IMAGE'; throw e;
+  }
+  if (!resp.ok) {
+    const d = await resp.json().catch(() => ({}));
+    const e = new Error(d.detail || d.message || `API error (${resp.status})`);
+    e.status = resp.status; throw e;
+  }
+
+  const data = await resp.json();
+  const url  = data?.images?.[0]?.url || data?.image?.url || data?.output?.images?.[0];
+  if (!url) throw new Error('No image returned from API. Please try again.');
+  return url;
+}
+
+async function retryWithBackoff(fn, maxRetries = 3, baseDelay = 1500) {
+  for (let i = 0; i <= maxRetries; i++) {
+    try { return await fn(); }
+    catch (err) {
+      const retryable = !err.code && (err.status >= 500 || err.status === 429 || !err.status);
+      if (!retryable || i === maxRetries) throw err;
+      const delay = baseDelay * Math.pow(2, i);
+      updateProgress(null, `Retrying in ${Math.round(delay / 1000)}s… (${i + 1}/${maxRetries})`);
+      await sleep(delay);
+    }
+  }
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// =============================================
+// LOADING UI
+// =============================================
+const MILESTONES = [
+  { pct: 12, label: 'Analyzing facial features…',       delay: 900,   step: 1 },
+  { pct: 30, label: 'Generating professional style…',   delay: 4000,  step: 1 },
+  { pct: 52, label: 'Applying lighting & background…',  delay: 9000,  step: 2 },
+  { pct: 70, label: 'Refining details…',                delay: 15000, step: 3 },
+  { pct: 85, label: 'Adding finishing touches…',        delay: 21000, step: 4 },
+  { pct: 92, label: 'Almost there…',                    delay: 27000, step: 4 },
+];
+
+function startFakeProgress() {
+  updateProgress(3, 'Initializing…');
+  setStepActive(null);
+  MILESTONES.forEach(({ pct, label, delay, step }) => {
+    const t = setTimeout(() => { updateProgress(pct, label); setStepActive(step); }, delay);
+    state.progressTimers.push(t);
+  });
+}
+
+function clearProgressTimers() {
+  state.progressTimers.forEach(clearTimeout);
+  state.progressTimers = [];
+}
+
+function updateProgress(pct, label) {
+  if (pct !== null) $id('progress-bar').style.width = pct + '%';
+  if (label) $id('progress-label').textContent = label;
+}
+
+function setStepActive(active) {
+  for (let i = 1; i <= 4; i++) {
+    const el = $id(`step-${i}`);
+    if (!el) continue;
+    el.classList.remove('active', 'done');
+    if (i < active) el.classList.add('done');
+    else if (i === active) el.classList.add('active');
+  }
+}
+
+// =============================================
+// RESULT HANDLING
+// =============================================
+async function handleSuccess(outputUrl, elapsed) {
+  hide($id('loading-state'));
+  hide($id('error-state'));
+
+  $id('before-img').src = state.compressedDataUrl;
+  $id('after-img').src  = outputUrl;
+
+  // Wait for the transformed image to load
+  await new Promise(resolve => {
+    const img = $id('after-img');
+    if (img.complete) { resolve(); return; }
+    img.onload = resolve; img.onerror = resolve;
+  });
+
+  $id('slider-range').value = 50;
+  updateSlider(50);
+  show($id('result-display'));
+
+  const secs = (elapsed / 1000).toFixed(1);
+  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · Generated in ${secs}s`;
+
+  await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed });
+  renderHistory(loadHistory());
+  showToast('Headshot generated! Drag the slider to compare.', 'success');
+}
+
+function handleError(err) {
+  hide($id('loading-state'));
+  hide($id('result-display'));
+  $id('error-message').textContent = err.message || 'Something went wrong. Please try again.';
+  show($id('error-state'));
+  showToast(err.message || 'Generation failed', 'error');
+
+  if (err.code === 'INVALID_KEY') {
+    localStorage.removeItem('headshot_api_key');
+    state.apiKey = null;
+    setTimeout(() => openApiKeyModal(true), 900);
+  }
+}
+
+// =============================================
+// SLIDER
+// =============================================
+function initSlider() {
+  const range     = $id('slider-range');
+  const container = $id('slider-container');
+
+  range.addEventListener('input', e => updateSlider(Number(e.target.value)));
+
+  let touching = false;
+  container.addEventListener('touchstart', () => { touching = true; }, { passive: true });
+  container.addEventListener('touchend',   () => { touching = false; }, { passive: true });
+  container.addEventListener('touchmove', e => {
+    if (!touching) return;
+    const rect = container.getBoundingClientRect();
+    const pct  = Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100));
+    range.value = pct;
+    updateSlider(pct);
+  }, { passive: true });
+}
+
+function updateSlider(pct) {
+  pct = Math.max(0, Math.min(100, pct));
+  $id('after-img').style.clipPath  = `inset(0 ${100 - pct}% 0 0)`;
+  $id('slider-handle').style.left  = `${pct}%`;
+}
+
+// =============================================
+// DOWNLOAD
+// =============================================
+function initDownloadBtn() {
+  $id('download-btn').addEventListener('click', () => {
+    const src  = $id('after-img').src;
+    if (!src) return;
+    const name = `headshot-${(state.selectedPreset || 'result').replace('_','-')}-${Date.now()}.jpg`;
+    downloadImage(src, name);
+  });
+  $id('regenerate-btn').addEventListener('click', () => generateHeadshot());
+}
+
+async function downloadImage(url, filename) {
+  try {
+    const blob    = await (await fetch(url)).blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a       = Object.assign(document.createElement('a'), { href: blobUrl, download: filename });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+    showToast('Download started!', 'success');
+  } catch {
+    const a = Object.assign(document.createElement('a'), { href: url, download: filename, target: '_blank' });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    showToast('Opening in new tab — right-click to save.', 'info');
+  }
+}
+
+// =============================================
+// HISTORY
+// =============================================
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem('headshot_history')) || []; } catch { return []; }
+}
+
+function persistHistory(items) {
+  try { localStorage.setItem('headshot_history', JSON.stringify(items)); }
+  catch { if (items.length > 3) persistHistory(items.slice(0, 3)); }
+}
+
+async function saveToHistory({ preset, outputUrl, elapsed }) {
+  const inputThumb  = await compressDataUrl(state.compressedDataUrl);
+  const raw         = await fetchAsDataUrl(outputUrl).catch(() => null);
+  const outputThumb = raw ? await compressDataUrl(raw) : outputUrl;
+
+  const history = loadHistory();
+  history.unshift({
+    id: `hs_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    timestamp: Date.now(),
+    preset,
+    presetName: PRESETS[preset]?.name || preset,
+    inputThumb,
+    outputThumb,
+    outputUrl,
+    generationTime: elapsed,
+  });
+  persistHistory(history.slice(0, MAX_HISTORY));
+}
+
+function deleteHistoryItem(id) {
+  const items = loadHistory().filter(i => i.id !== id);
+  persistHistory(items);
+  renderHistory(items);
+}
+
+function clearHistory() {
+  if (!confirm('Delete all saved headshots? This cannot be undone.')) return;
+  localStorage.removeItem('headshot_history');
+  renderHistory([]);
+  showToast('History cleared.', 'info');
+}
+
+function initHistory() {
+  renderHistory(loadHistory());
+  $id('clear-history-btn').addEventListener('click', clearHistory);
+}
+
+function renderHistory(items) {
+  const grid   = $id('history-grid');
+  const empty  = $id('history-empty');
+  const footer = $id('history-footer');
+  grid.innerHTML = '';
+
+  if (!items.length) { show(empty); hide(footer); return; }
+  hide(empty); show(footer);
+
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'history-card';
+    card.innerHTML = `
+      <div class="history-thumb"><img src="${item.outputThumb || ''}" alt="${item.presetName}" loading="lazy"></div>
+      <div class="history-meta">
+        <div class="history-preset">${item.presetName}</div>
+        <div class="history-date">${fmtDate(item.timestamp)}</div>
+        <div class="history-actions">
+          <button class="btn btn-secondary">⬇ Save</button>
+          <button class="btn btn-ghost">🗑</button>
+        </div>
+      </div>`;
+    const [dl, del] = card.querySelectorAll('button');
+    dl.onclick  = () => downloadImage(item.outputUrl, `headshot-${item.preset}-${item.timestamp}.jpg`);
+    del.onclick = () => deleteHistoryItem(item.id);
+    grid.appendChild(card);
+  });
+}
+
+function fmtDate(ts) {
+  const d = new Date(ts), now = Date.now(), diff = now - ts;
+  if (diff < 3600000)   return 'Just now';
+  if (diff < 86400000)  return `${Math.floor(diff / 3600000)}h ago`;
+  if (diff < 604800000) return `${Math.floor(diff / 86400000)}d ago`;
+  return d.toLocaleDateString();
+}
+
+// =============================================
+// FAQ ACCORDION
+// =============================================
+function initFaq() {
+  $qsa('.faq-item').forEach(item => {
+    const btn    = item.querySelector('.faq-question');
+    const answer = item.querySelector('.faq-answer');
+    btn.addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      $qsa('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-answer').style.maxHeight = '0';
+      });
+      if (!wasOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    });
+  });
+}
+
+// =============================================
+// NAVIGATION
+// =============================================
+function initNav() {
+  const nav = $id('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 50), { passive: true });
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+}
+
+function openMobileMenu()  { $id('nav-mobile-menu').classList.add('open');    document.body.style.overflow = 'hidden'; }
+function closeMobileMenu() { $id('nav-mobile-menu').classList.remove('open'); document.body.style.overflow = ''; }
+
+// =============================================
+// SCROLL REVEAL
+// =============================================
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) {
+    $qsa('.will-reveal').forEach(el => el.classList.add('reveal')); return;
+  }
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('reveal'); obs.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  $qsa('.will-reveal').forEach(el => obs.observe(el));
+}
+
+// =============================================
+// INIT
+// =============================================
+document.addEventListener('DOMContentLoaded', () => {
+  state.apiKey = resolveApiKey();
+
+  initNav();
+  initUpload();
+  initPresets();
+  initTransformBtn();
+  initSlider();
+  initDownloadBtn();
+  initHistory();
+  initFaq();
+  initApiKeyModal();
+  initScrollReveal();
+
+  if (!state.apiKey) {
+    setTimeout(() => showToast('Configure your fal.ai API key to get started — click "API Key" in the nav.', 'info', 8000), 2200);
+  }
+});
+</script>
+</body>
+</html>
