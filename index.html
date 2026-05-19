@@ -6,7 +6,7 @@
   <meta name="description" content="Transform any photo into a professional corporate headshot for free. AI-powered — no API key required." />
   <meta property="og:title" content="HeadshotAI — Free Professional Headshots" />
   <meta property="og:description" content="Generate professional LinkedIn, resume, and passport headshots free with AI." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://image.pollinations.ai https://*.huggingface.co; connect-src 'self' https://image.pollinations.ai https://api-inference.huggingface.co;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://image.pollinations.ai https://*.hf.space; connect-src 'self' https://image.pollinations.ai https://timbrooks-instruct-pix2pix.hf.space;" />
   <title>HeadshotAI — Free Professional Headshots</title>
   <style>
     /* === CUSTOM PROPERTIES === */
@@ -89,7 +89,7 @@
     /* === MODE PILL === */
     .mode-pill{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-weight:600;padding:4px 12px;border-radius:var(--radius-full);border:1px solid}
     .mode-pill.pollinations{color:#a78bfa;background:rgba(124,58,237,.1);border-color:rgba(124,58,237,.25)}
-    .mode-pill.huggingface{color:#fb923c;background:rgba(251,146,60,.1);border-color:rgba(251,146,60,.25)}
+    .mode-pill.face-preserve{color:#4ade80;background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25)}
 
     /* === NAV === */
     #nav{position:fixed;top:0;left:0;right:0;z-index:var(--z-sticky);padding:16px 0;transition:all var(--transition-base)}
@@ -211,7 +211,6 @@
     .provider-option{flex:1;min-width:220px}
     .provider-option-header{display:flex;align-items:center;gap:8px;font-size:.875rem;font-weight:700;margin-bottom:6px}
     .provider-option p{font-size:.8125rem;color:var(--text-secondary);line-height:1.5}
-    .provider-divider{width:1px;background:var(--glass-border);flex-shrink:0}
 
     /* === HISTORY === */
     #history-section{background:var(--bg-secondary)}
@@ -254,25 +253,6 @@
     .footer-bottom p{font-size:.8125rem;color:var(--text-muted)}
     .footer-bottom a{color:var(--accent-purple-light)}
 
-    /* === HF TOKEN MODAL === */
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:var(--z-modal);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn var(--transition-base) ease}
-    .modal-card{background:var(--bg-secondary);border:1px solid var(--glass-border);border-radius:var(--radius-xl);padding:32px;max-width:500px;width:100%;box-shadow:var(--shadow-lg);animation:slideUp var(--transition-slow) ease}
-    .modal-icon{width:56px;height:56px;background:rgba(251,146,60,.15);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px}
-    .modal-card h2{font-size:1.375rem;font-weight:800;margin-bottom:8px}
-    .modal-card>.modal-desc{font-size:.9rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.6}
-    .modal-card>.modal-desc a{color:var(--accent-purple-light);text-decoration:underline}
-    .compare-modes{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-    .compare-mode{background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:14px}
-    .compare-mode-title{font-size:.8125rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-    .compare-mode-desc{font-size:.75rem;color:var(--text-secondary);line-height:1.4}
-    .input-group{margin-bottom:20px}
-    .input-label{display:block;font-size:.875rem;font-weight:600;margin-bottom:8px}
-    .input-field{width:100%;background:var(--surface-1);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:12px 16px;color:var(--text-primary);font-size:.9375rem;font-family:var(--font-sans);transition:border-color var(--transition-base);outline:none}
-    .input-field:focus{border-color:var(--accent-purple);box-shadow:0 0 0 3px rgba(124,58,237,.15)}
-    .input-field::placeholder{color:var(--text-muted)}
-    .modal-actions{display:flex;gap:12px}
-    .modal-note{margin-top:16px;padding:10px 14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius-md);font-size:.8rem;color:var(--text-secondary);line-height:1.5}
-    .modal-note strong{color:var(--accent-green)}
 
     /* === TOASTS === */
     #toast-container{position:fixed;top:24px;right:24px;z-index:var(--z-toast);display:flex;flex-direction:column;gap:12px;pointer-events:none}
@@ -351,8 +331,7 @@
         <li><a href="#faq-section">FAQ</a></li>
       </ul>
       <div class="nav-actions">
-        <button class="btn btn-secondary btn-sm" onclick="openHfModal()">🤗 HF Token</button>
-        <a href="#upload-section" class="btn btn-primary btn-sm">Try Free</a>
+        <a href="#upload-section" class="btn btn-primary btn-sm">Try Free →</a>
         <button class="nav-hamburger" onclick="openMobileMenu()" aria-label="Open menu">
           <span></span><span></span><span></span>
         </button>
@@ -369,7 +348,6 @@
   <a href="#how-section" onclick="closeMobileMenu()">How it works</a>
   <a href="#history-section" onclick="closeMobileMenu()">My Headshots</a>
   <a href="#faq-section" onclick="closeMobileMenu()">FAQ</a>
-  <button class="btn btn-secondary" onclick="closeMobileMenu();openHfModal()">🤗 Add HF Token</button>
 </div>
 
 <!-- ======= HERO ======= -->
@@ -381,12 +359,12 @@
     <div class="hero-content">
       <h1>Professional<br><span class="gradient-text">Headshots</span><br>for Free</h1>
       <p class="hero-subtitle">
-        Upload a photo, pick a style, and AI generates a professional corporate
-        headshot instantly — no account, no credit card, no catch.
+        Upload your photo, pick a style, and AI transforms it into a professional
+        headshot — preserving your actual face. Free, no account, no API key.
       </p>
       <div class="hero-badges">
         <span class="free-badge"><span class="dot"></span>100% Free · No API Key Required</span>
-        <span class="free-badge" style="color:var(--accent-purple-light);background:var(--accent-purple-dim);border-color:rgba(124,58,237,.3)"><span class="dot" style="background:var(--accent-purple-light)"></span>Powered by Pollinations AI</span>
+        <span class="free-badge" style="color:var(--accent-purple-light);background:var(--accent-purple-dim);border-color:rgba(124,58,237,.3)"><span class="dot" style="background:var(--accent-purple-light)"></span>Face-Preserving AI · Upload Your Photo</span>
       </div>
       <div class="hero-cta-group">
         <a href="#upload-section" class="btn btn-primary btn-lg">✨ Generate Free Headshot</a>
@@ -434,18 +412,17 @@
       <div class="provider-info-row">
         <div class="provider-option">
           <div class="provider-option-header">
-            <span class="mode-pill pollinations">✨ Default</span>
-            <strong>Pollinations AI</strong>
+            <span class="mode-pill face-preserve">🧬 Face-Preserving AI</span>
+            <strong>Upload a photo to use your actual face</strong>
           </div>
-          <p>Completely free. No account or API key needed. Uses FLUX to generate professional headshots from your style selection. Works instantly for everyone.</p>
+          <p>When you upload a photo, the app uses <strong>InstructPix2Pix</strong> — a free HuggingFace Space that performs image-to-image transformation, editing your attire and background while keeping your actual face intact. No API key needed.</p>
         </div>
-        <div class="provider-divider"></div>
         <div class="provider-option">
           <div class="provider-option-header">
-            <span class="mode-pill huggingface">🤗 Enhanced</span>
-            <strong>HuggingFace (optional)</strong>
+            <span class="mode-pill pollinations">✨ Pollinations AI</span>
+            <strong>Fallback · No photo required</strong>
           </div>
-          <p>Free HuggingFace account + token unlocks face-preserving image-to-image mode. Your face features are carried into the generated headshot. <button class="btn-ghost" style="font-size:.8rem;padding:0;color:var(--accent-purple-light);text-decoration:underline" onclick="openHfModal()">Add token →</button></p>
+          <p>If no photo is uploaded or the face-preserving AI is unavailable, <a href="https://pollinations.ai" target="_blank" rel="noopener" style="color:var(--accent-purple-light)">Pollinations AI</a> generates a sample professional headshot from your chosen style — still free, no key needed.</p>
         </div>
       </div>
     </div>
@@ -540,9 +517,9 @@
       </div>
     </div>
     <div class="transform-area will-reveal">
-      <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Headshot</button>
+      <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Free Headshot</button>
       <div class="transform-mode-row">
-        <span id="active-mode-pill" class="mode-pill pollinations">✨ Pollinations AI · Free</span>
+        <span class="mode-pill pollinations" id="mode-pill-dynamic">✨ Pollinations AI · Free · No Key Required</span>
         <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Select a style to continue</span>
       </div>
     </div>
@@ -634,15 +611,15 @@
       </div>
       <div class="faq-item">
         <button class="faq-question">Will the generated headshot look like me?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">In the default free mode (Pollinations), the app generates a professional headshot based on your chosen style — it's a text-to-image generation, so the face is AI-created. For actual face preservation, add a free <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">HuggingFace token</a> to enable image-to-image mode, which uses your uploaded photo as a visual reference.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes — when you upload a photo, the app uses <strong>face-preserving image-to-image AI</strong> (InstructPix2Pix via a free HuggingFace Space) that edits your actual photo to apply professional attire and background while keeping your face intact. No token or account required.</div></div>
       </div>
       <div class="faq-item">
-        <button class="faq-question">What is the HuggingFace token for?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Adding a free HuggingFace token unlocks the enhanced mode: your uploaded photo is sent to the <code>timbrooks/instruct-pix2pix</code> model on HuggingFace, which edits your actual photo to add professional attire and background while preserving your face. Create a free account at <a href="https://huggingface.co" target="_blank" rel="noopener">huggingface.co</a> to get a token — no credit card required.</div></div>
+        <button class="faq-question">How does face preservation work?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
+        <div class="faq-answer"><div class="faq-answer-inner">Your uploaded photo is sent to the <code>timbrooks/instruct-pix2pix</code> public Space on HuggingFace. This model uses an instruction like "make this person wear a navy suit" to edit your photo — changing clothing and background while preserving the face geometry and identity. No API key required; the Space is publicly accessible.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">Is my photo stored or shared?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">In default mode (Pollinations), your photo is used locally only as the "before" preview — it is never uploaded anywhere. In HuggingFace mode, your compressed photo is sent to HuggingFace's inference API. Generated thumbnails are saved in your browser's localStorage only. This is a fully static, serverless app with no database.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Your compressed photo is sent directly to the HuggingFace public Space for inference — it is not stored on any server we control. Generated thumbnails are saved in your browser's localStorage only. This is a fully static, serverless app with no database or backend.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How long does generation take?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
@@ -689,39 +666,6 @@
   </div>
 </footer>
 
-<!-- ======= HF TOKEN MODAL ======= -->
-<div id="hf-modal" class="modal-overlay" hidden>
-  <div class="modal-card">
-    <div class="modal-icon">🤗</div>
-    <h2>Upgrade to Face-Preserving Mode</h2>
-    <p class="modal-desc">
-      Add a free <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener">HuggingFace token</a> to enable image-to-image mode — your uploaded face is used as the base for the transformation.
-    </p>
-    <div class="compare-modes">
-      <div class="compare-mode">
-        <div class="compare-mode-title"><span class="mode-pill pollinations" style="font-size:.65rem;padding:2px 8px">✨ Default</span></div>
-        <div class="compare-mode-desc">Pollinations AI — free, no token, text-to-image. Generates a professional headshot from your style choice. Face is AI-created.</div>
-      </div>
-      <div class="compare-mode" style="border-color:rgba(251,146,60,.3)">
-        <div class="compare-mode-title"><span class="mode-pill huggingface" style="font-size:.65rem;padding:2px 8px">🤗 Enhanced</span></div>
-        <div class="compare-mode-desc">HuggingFace — free account token, image-to-image. Uses your uploaded photo as the reference, preserving your face &amp; features.</div>
-      </div>
-    </div>
-    <div class="input-group">
-      <label for="hf-token-input" class="input-label">HuggingFace Token <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
-      <input type="password" id="hf-token-input" class="input-field"
-        placeholder="hf_xxxxxxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
-    </div>
-    <div class="modal-actions">
-      <button class="btn btn-primary" id="save-hf-btn" style="flex:1">Enable Enhanced Mode</button>
-      <button class="btn btn-secondary" id="clear-hf-btn">Use Free Mode</button>
-    </div>
-    <div class="modal-note">
-      <strong>✅ Free account:</strong> Sign up at <a href="https://huggingface.co/join" target="_blank" rel="noopener" style="color:var(--accent-green)">huggingface.co/join</a>, then get a token from <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener" style="color:var(--accent-green)">Settings → Tokens</a>. No credit card required.
-    </div>
-  </div>
-</div>
-
 <!-- Toast container -->
 <div id="toast-container" aria-live="polite"></div>
 
@@ -731,53 +675,47 @@
 
 // =============================================
 // CONFIG
-// Provider swap: change ACTIVE_PROVIDER or let
-// the app auto-detect based on HF token presence.
 // =============================================
-const POLLINATIONS_BASE  = 'https://image.pollinations.ai/prompt';
-const HF_IMG2IMG_MODEL   = 'timbrooks/instruct-pix2pix';
-const HF_API_BASE        = 'https://api-inference.huggingface.co/models';
-const HF_TOKEN_KEY       = 'headshot_hf_token';
-const MAX_HISTORY        = 10;
-const MAX_IMG_DIM        = 1024;
-const JPEG_QUALITY       = 0.88;
-const THUMB_SIZE         = 240;
-const THUMB_QUALITY      = 0.72;
+const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt';
+const SPACE_URL         = 'https://timbrooks-instruct-pix2pix.hf.space';
+const MAX_HISTORY       = 10;
+const MAX_IMG_DIM       = 1024;
+const JPEG_QUALITY      = 0.88;
+const THUMB_SIZE        = 240;
+const THUMB_QUALITY     = 0.72;
 
 // =============================================
-// PRESETS
-// prompt      → used by Pollinations (text-to-image)
-// hfInstruct  → used by HuggingFace instruct-pix2pix
+// PRESETS — optimized prompts for Pollinations FLUX
 // =============================================
 const PRESETS = {
   male_formal: {
     name: 'Male Formal Suit',
     prompt: 'professional corporate headshot portrait of a man, navy blue business suit, crisp white dress shirt, silk tie, soft studio lighting, neutral light gray gradient background, sharp focus face, skin retouching, confident expression, photorealistic, 8K, LinkedIn photo',
-    hfInstruct: 'make this person wear a professional navy blue business suit with white shirt and tie, soft studio lighting, neutral gray background, professional headshot',
+    hfInstruct: 'make this person wear a navy blue business suit with a crisp white dress shirt and silk tie, professional corporate headshot, studio lighting, neutral gray background',
     negativePrompt: 'cartoon, anime, casual, t-shirt, outdoor, blurry, watermark, text, distorted face, multiple people',
   },
   female_professional: {
     name: 'Female Professional',
     prompt: 'professional corporate headshot portrait of a woman, elegant tailored black blazer, professional blouse, soft studio lighting, warm gradient background, sharp focus face, natural makeup, confident expression, photorealistic, 8K, LinkedIn photo',
-    hfInstruct: 'make this person wear a professional navy blazer, soft studio lighting, neutral warm background, professional female executive headshot',
+    hfInstruct: 'make this person wear an elegant tailored black blazer with a professional blouse, executive headshot, soft studio lighting, warm gradient background',
     negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted face, multiple people',
   },
   neutral_corporate: {
     name: 'Neutral Corporate',
     prompt: 'professional corporate headshot portrait, dark gray business blazer, gender-neutral professional look, clean minimal studio lighting, soft white background, sharp focus face, natural expression, modern headshot, photorealistic, 8K',
-    hfInstruct: 'make this person wear a professional dark gray business blazer, clean studio lighting, white background, corporate headshot',
+    hfInstruct: 'make this person wear a dark gray business blazer, professional corporate headshot, clean minimal studio lighting, soft white background',
     negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted, multiple people',
   },
   passport: {
     name: 'Passport / ID',
     prompt: 'official passport photo portrait, plain white background, person looking directly at camera, neutral expression, mouth closed, formal clothing at shoulders, even flat lighting, no shadows on background, centered, sharp focus, photorealistic, government ID style',
-    hfInstruct: 'convert to official passport photo: plain white background, neutral expression, looking directly at camera, even flat lighting, formal clothing',
+    hfInstruct: 'change the background to plain white, make this person wear a plain formal shirt, neutral expression, flat even lighting, centered passport photo style',
     negativePrompt: 'cartoon, anime, smile, looking away, colored background, shadows, sunglasses, hat, watermark, blurry, multiple people',
   },
   linkedin: {
     name: 'LinkedIn Optimized',
     prompt: 'LinkedIn profile headshot portrait, professional business casual blazer, warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, face sharp, skin retouching, photorealistic, 8K, approachable professional',
-    hfInstruct: 'make this person wear a professional blazer with warm confident smile, soft studio lighting, blurred professional background, LinkedIn headshot style',
+    hfInstruct: 'make this person wear a smart professional blazer, warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, LinkedIn headshot',
     negativePrompt: 'cartoon, anime, casual t-shirt, busy background, watermark, text, blurry, distorted face, harsh shadows, multiple people',
   },
 };
@@ -829,24 +767,6 @@ function dismissToast(t) {
   setTimeout(() => t.remove(), 300);
 }
 
-// =============================================
-// PROVIDER DETECTION
-// =============================================
-function getHfToken() {
-  return localStorage.getItem(HF_TOKEN_KEY) || null;
-}
-
-function activeProvider() {
-  return getHfToken() ? 'huggingface' : 'pollinations';
-}
-
-function updateModePill() {
-  const pill = $id('active-mode-pill');
-  if (!pill) return;
-  const hf = !!getHfToken();
-  pill.className = `mode-pill ${hf ? 'huggingface' : 'pollinations'}`;
-  pill.textContent = hf ? '🤗 HuggingFace · Face-preserving' : '✨ Pollinations AI · Free';
-}
 
 // =============================================
 // IMAGE COMPRESSION
@@ -942,7 +862,7 @@ async function handleFileSelect(file) {
     hide($id('drop-zone'));
     show($id('upload-preview'));
     updateTransformBtn();
-    showToast('Photo ready! Now select a style.', 'success');
+    showToast('Photo ready! Face-preserving mode active — select a style.', 'success');
   } catch {
     dismissToast(t);
     showToast('Could not process image. Try a different file.', 'error');
@@ -997,17 +917,112 @@ function selectPreset(key) {
 function updateTransformBtn() {
   const btn  = $id('transform-btn');
   const hint = $id('transform-hint');
+  const pill = $id('mode-pill-dynamic');
   if (!state.selectedPreset) {
-    btn.disabled = false; // allow click to show guidance
+    btn.disabled = false;
     hint.textContent = 'Select a style to continue';
   } else {
     btn.disabled = false;
     hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}"`;
   }
+  if (pill) {
+    if (state.compressedDataUrl) {
+      pill.textContent = '🧬 Face-Preserving AI · Your photo will be used';
+      pill.className = 'mode-pill face-preserve';
+    } else {
+      pill.textContent = '✨ Pollinations AI · Free · No Key Required';
+      pill.className = 'mode-pill pollinations';
+    }
+  }
 }
 
 // =============================================
-// AI GENERATION — POLLINATIONS (free, no key)
+// AI GENERATION — GRADIO SPACE (face-preserving, free, no key)
+// =============================================
+async function uploadToSpace(dataUrl) {
+  const fetchResp = await fetch(dataUrl);
+  const blob = await fetchResp.blob();
+  const form = new FormData();
+  form.append('files', blob, 'photo.jpg');
+  const up = await fetch(`${SPACE_URL}/upload`, { method: 'POST', body: form });
+  if (!up.ok) throw Object.assign(new Error('Upload failed'), { fallback: true });
+  const paths = await up.json();
+  if (!paths?.[0]) throw Object.assign(new Error('No upload path returned'), { fallback: true });
+  return paths[0];
+}
+
+async function callGradioSpace(dataUrl, preset, attempt = 0) {
+  updateProgress(12, 'Uploading photo to face-preserving AI…');
+
+  let filePath;
+  try {
+    filePath = await uploadToSpace(dataUrl);
+  } catch {
+    throw Object.assign(new Error('Could not reach face-preserving AI — falling back.'), { fallback: true });
+  }
+
+  updateProgress(28, 'Analyzing your facial features…');
+
+  const body = {
+    fn_index: 0,
+    data: [
+      { path: filePath, mime_type: 'image/jpeg', orig_name: 'photo.jpg', meta: { _type: 'gradio.FileData' } },
+      preset.hfInstruct,
+      20,
+      7.5,
+      1.5,
+      Math.floor(Math.random() * 99999),
+    ],
+  };
+
+  const resp = await fetch(`${SPACE_URL}/api/predict`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+  if (resp.status === 503 || resp.status === 500) {
+    if (attempt >= 2) throw Object.assign(new Error('Face-preserving AI is busy — falling back.'), { fallback: true });
+    updateProgress(null, `Waking AI model… attempt ${attempt + 1}/3`);
+    await sleep((attempt + 1) * 20000);
+    return callGradioSpace(dataUrl, preset, attempt + 1);
+  }
+
+  if (!resp.ok) throw Object.assign(new Error(`Space error (${resp.status}) — falling back.`), { fallback: true });
+
+  const result = await resp.json();
+  if (result.error) throw Object.assign(new Error(result.error), { fallback: true });
+
+  updateProgress(82, 'Finalizing your headshot…');
+  const out = result.data?.[0];
+  if (!out) throw Object.assign(new Error('No output from AI — falling back.'), { fallback: true });
+
+  return resolveGradioOutput(out);
+}
+
+async function resolveGradioOutput(output) {
+  if (typeof output === 'string') {
+    if (output.startsWith('data:')) return output;
+    const url = output.startsWith('/') ? `${SPACE_URL}${output}` : output;
+    const r = await fetch(url);
+    if (!r.ok) throw Object.assign(new Error('Could not fetch result image'), { fallback: true });
+    return URL.createObjectURL(await r.blob());
+  }
+  if (output && typeof output === 'object') {
+    if (output.data) return output.data;
+    const raw = output.url || output.path || output.name;
+    if (raw) {
+      const url = raw.startsWith('/') ? `${SPACE_URL}${raw}` : raw;
+      const r = await fetch(url);
+      if (!r.ok) throw Object.assign(new Error('Could not fetch result image'), { fallback: true });
+      return URL.createObjectURL(await r.blob());
+    }
+  }
+  throw Object.assign(new Error('Unexpected AI response format — falling back.'), { fallback: true });
+}
+
+// =============================================
+// AI GENERATION — POLLINATIONS (free, no key, fallback)
 // =============================================
 async function callPollinations(preset) {
   const seed   = Math.floor(Math.random() * 999999);
@@ -1025,62 +1040,8 @@ async function callPollinations(preset) {
   if (!resp.ok) throw new Error(`Pollinations error (${resp.status})`);
 
   updateProgress(75, 'Downloading generated image…');
-  const blob   = await resp.blob();
-  if (!blob.type.startsWith('image/')) throw new Error('Unexpected response — try again.');
-  return URL.createObjectURL(blob);
-}
-
-// =============================================
-// AI GENERATION — HUGGINGFACE (free token, img2img)
-// =============================================
-async function callHuggingFace(imageDataUrl, preset, token, attempt = 0) {
-  const base64 = imageDataUrl.split(',')[1];
-  const url    = `${HF_API_BASE}/${HF_IMG2IMG_MODEL}`;
-
-  updateProgress(15, 'Sending image to HuggingFace…');
-
-  const resp = await fetch(url, {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      inputs: base64,
-      parameters: {
-        prompt: preset.hfInstruct,
-        num_inference_steps: 20,
-        image_guidance_scale: 1.5,
-        guidance_scale: 7.5,
-      },
-    }),
-  });
-
-  // Model loading — wait and retry
-  if (resp.status === 503) {
-    let waitSecs = 30;
-    try { const d = await resp.json(); waitSecs = Math.round(d.estimated_time || 30); } catch {}
-    if (attempt >= 3) throw new Error('Model took too long to load. Try again or switch to free mode.');
-    updateProgress(null, `Model is loading — retrying in ${waitSecs}s…`);
-    showToast(`HuggingFace model loading. Waiting ${waitSecs}s…`, 'warning', waitSecs * 1000);
-    await sleep(Math.min(waitSecs, 60) * 1000);
-    return callHuggingFace(imageDataUrl, preset, token, attempt + 1);
-  }
-
-  if (resp.status === 401) {
-    const e = new Error('Invalid HuggingFace token. Please check and re-enter.');
-    e.code = 'INVALID_TOKEN'; throw e;
-  }
-
-  if (!resp.ok) {
-    const d = await resp.json().catch(() => ({}));
-    throw new Error(d.error || `HuggingFace error (${resp.status})`);
-  }
-
-  updateProgress(80, 'Downloading result…');
   const blob = await resp.blob();
-  if (!blob.type.startsWith('image/')) {
-    // May have returned JSON error
-    const text = await blob.text().catch(() => '');
-    throw new Error(JSON.parse(text)?.error || 'Invalid response from HuggingFace.');
-  }
+  if (!blob.type.startsWith('image/')) throw new Error('Unexpected response — try again.');
   return URL.createObjectURL(blob);
 }
 
@@ -1106,36 +1067,39 @@ async function generateHeadshot() {
   state.isGenerating = true;
   const t0     = Date.now();
   const preset = PRESETS[state.selectedPreset];
-  const hfToken = getHfToken();
-  const provider = hfToken ? 'huggingface' : 'pollinations';
-
-  // HuggingFace requires uploaded image
-  if (provider === 'huggingface' && !state.compressedDataUrl) {
-    showToast('Please upload a photo to use face-preserving mode.', 'warning');
-    state.isGenerating = false;
-    return;
-  }
 
   show($id('result-section'));
   hide($id('error-state'));
   hide($id('result-display'));
   show($id('loading-state'));
   $id('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  startFakeProgress(provider);
 
   try {
-    let outputUrl;
-    if (provider === 'huggingface') {
-      outputUrl = await callHuggingFace(state.compressedDataUrl, preset, hfToken);
+    let outputUrl, provider;
+
+    if (state.compressedDataUrl) {
+      startFakeProgress('space');
+      try {
+        outputUrl = await callGradioSpace(state.compressedDataUrl, preset);
+        provider = 'face-preserve';
+      } catch (err) {
+        if (!err.fallback) throw err;
+        showToast('Face-preserving AI unavailable — using Pollinations instead…', 'warning', 6000);
+        clearProgressTimers();
+        startFakeProgress('pollinations');
+        outputUrl = await callPollinations(preset);
+        provider = 'pollinations';
+      }
     } else {
+      startFakeProgress('pollinations');
       outputUrl = await callPollinations(preset);
+      provider = 'pollinations';
     }
 
     clearProgressTimers();
     updateProgress(100, 'Complete! ✨');
     await sleep(300);
     await handleSuccess(outputUrl, Date.now() - t0, provider);
-
   } catch (err) {
     clearProgressTimers();
     handleError(err);
@@ -1147,25 +1111,26 @@ async function generateHeadshot() {
 // =============================================
 // LOADING UI
 // =============================================
-const MILESTONES_POLLINATIONS = [
-  { pct: 10, label: 'Composing professional prompt…',    delay: 600,  step: 1 },
-  { pct: 35, label: 'FLUX is rendering your headshot…',  delay: 3000, step: 2 },
-  { pct: 65, label: 'Applying style and lighting…',      delay: 7000, step: 2 },
-  { pct: 85, label: 'Polishing final details…',          delay: 11000, step: 3 },
-];
-const MILESTONES_HF = [
-  { pct: 10, label: 'Uploading image to HuggingFace…',   delay: 600,  step: 1 },
-  { pct: 30, label: 'AI is analyzing your face…',        delay: 4000, step: 2 },
-  { pct: 55, label: 'Applying professional style…',      delay: 12000, step: 2 },
-  { pct: 78, label: 'Enhancing lighting & background…',  delay: 25000, step: 3 },
-  { pct: 90, label: 'Almost done…',                      delay: 40000, step: 3 },
-];
+const MILESTONES = {
+  space: [
+    { pct: 15, label: 'Analyzing your photo…',             delay: 800,   step: 1 },
+    { pct: 40, label: 'Preserving your facial features…',  delay: 5000,  step: 2 },
+    { pct: 65, label: 'Applying professional style…',      delay: 15000, step: 2 },
+    { pct: 80, label: 'Enhancing lighting & background…',  delay: 30000, step: 3 },
+    { pct: 90, label: 'Finishing touches…',                delay: 50000, step: 3 },
+  ],
+  pollinations: [
+    { pct: 10, label: 'Composing professional prompt…',    delay: 600,   step: 1 },
+    { pct: 35, label: 'FLUX is rendering your headshot…',  delay: 3000,  step: 2 },
+    { pct: 65, label: 'Applying style and lighting…',      delay: 7000,  step: 2 },
+    { pct: 85, label: 'Polishing final details…',          delay: 11000, step: 3 },
+  ],
+};
 
-function startFakeProgress(provider) {
+function startFakeProgress(mode = 'pollinations') {
   updateProgress(3, 'Starting…');
   setStepActive(null);
-  const milestones = provider === 'huggingface' ? MILESTONES_HF : MILESTONES_POLLINATIONS;
-  milestones.forEach(({ pct, label, delay, step }) => {
+  (MILESTONES[mode] || MILESTONES.pollinations).forEach(({ pct, label, delay, step }) => {
     const t = setTimeout(() => { updateProgress(pct, label); setStepActive(step); }, delay);
     state.progressTimers.push(t);
   });
@@ -1198,7 +1163,6 @@ async function handleSuccess(outputUrl, elapsed, provider) {
   hide($id('loading-state'));
   hide($id('error-state'));
 
-  // Before image: use uploaded photo if available, otherwise show placeholder color
   const beforeSrc = state.compressedDataUrl || '';
   $id('before-img').src = beforeSrc;
   $id('after-img').src  = outputUrl;
@@ -1212,7 +1176,6 @@ async function handleSuccess(outputUrl, elapsed, provider) {
   $id('slider-range').value = 50;
   updateSlider(50);
 
-  // Hide before side if no upload
   if (!beforeSrc) {
     $id('slider-handle').style.display = 'none';
     $id('slider-range').style.display  = 'none';
@@ -1222,13 +1185,16 @@ async function handleSuccess(outputUrl, elapsed, provider) {
 
   show($id('result-display'));
 
-  const secs       = (elapsed / 1000).toFixed(1);
-  const provLabel  = provider === 'huggingface' ? 'HuggingFace · face-preserving' : 'Pollinations AI · free';
-  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · ${provLabel} · ${secs}s`;
+  const secs          = (elapsed / 1000).toFixed(1);
+  const providerLabel = provider === 'face-preserve' ? 'Face-Preserving AI' : 'Pollinations AI';
+  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · ${providerLabel} · ${secs}s`;
 
   await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed, provider });
   renderHistory(loadHistory());
-  showToast(state.compressedDataUrl ? 'Done! Drag the slider to compare.' : 'Headshot generated!', 'success');
+  const msg = provider === 'face-preserve'
+    ? 'Done! Your face was preserved. Drag the slider to compare.'
+    : (beforeSrc ? 'Done! Drag the slider to compare.' : 'Headshot generated!');
+  showToast(msg, 'success');
 }
 
 function handleError(err) {
@@ -1237,12 +1203,6 @@ function handleError(err) {
   $id('error-message').textContent = err.message || 'Something went wrong. Please try again.';
   show($id('error-state'));
   showToast(err.message || 'Generation failed', 'error');
-
-  if (err.code === 'INVALID_TOKEN') {
-    localStorage.removeItem(HF_TOKEN_KEY);
-    updateModePill();
-    setTimeout(() => openHfModal(), 800);
-  }
 }
 
 // =============================================
@@ -1386,45 +1346,6 @@ function fmtDate(ts) {
 }
 
 // =============================================
-// HF TOKEN MODAL
-// =============================================
-function openHfModal() {
-  const existing = getHfToken();
-  if (existing) $id('hf-token-input').value = existing;
-  show($id('hf-modal'));
-  setTimeout(() => $id('hf-token-input').focus(), 80);
-}
-
-function closeHfModal() {
-  hide($id('hf-modal'));
-  $id('hf-token-input').value = '';
-}
-
-function initHfModal() {
-  $id('save-hf-btn').addEventListener('click', () => {
-    const key = $id('hf-token-input').value.trim();
-    if (!key || key.length < 8) { showToast('Enter a valid HuggingFace token.', 'warning'); return; }
-    localStorage.setItem(HF_TOKEN_KEY, key);
-    updateModePill();
-    showToast('HuggingFace token saved — face-preserving mode active!', 'success');
-    closeHfModal();
-  });
-
-  $id('clear-hf-btn').addEventListener('click', () => {
-    localStorage.removeItem(HF_TOKEN_KEY);
-    updateModePill();
-    showToast('Switched to free Pollinations mode.', 'info');
-    closeHfModal();
-  });
-
-  $id('hf-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeHfModal(); });
-  $id('hf-token-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') $id('save-hf-btn').click();
-    if (e.key === 'Escape') closeHfModal();
-  });
-}
-
-// =============================================
 // FAQ ACCORDION
 // =============================================
 function initFaq() {
@@ -1484,9 +1405,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initDownloadBtn();
   initHistory();
   initFaq();
-  initHfModal();
   initScrollReveal();
-  updateModePill();
   updateTransformBtn();
 });
 </script>
