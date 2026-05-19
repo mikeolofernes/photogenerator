@@ -6,7 +6,7 @@
   <meta name="description" content="Transform any photo into a professional corporate headshot for free. AI-powered — no API key required." />
   <meta property="og:title" content="HeadshotAI — Free Professional Headshots" />
   <meta property="og:description" content="Generate professional LinkedIn, resume, and passport headshots free with AI." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.replicate.delivery https://replicate.delivery; connect-src 'self' https://api.replicate.com;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.replicate.delivery https://replicate.delivery; connect-src 'self' https://*.workers.dev https://*.replicate.delivery;" />
   <title>HeadshotAI — Free Professional Headshots</title>
   <style>
     /* === CUSTOM PROPERTIES === */
@@ -528,7 +528,7 @@
       <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Free Headshot</button>
       <div class="transform-mode-row">
         <span class="mode-pill needs-key" id="mode-pill-dynamic">🔑 Add Replicate token to get started</span>
-        <button class="btn btn-ghost btn-sm" onclick="openTokenModal()" id="token-settings-btn">⚙ API Token</button>
+        <button class="btn btn-ghost btn-sm" onclick="openTokenModal()" id="token-settings-btn">⚙ Settings</button>
       </div>
       <div style="margin-top:8px">
         <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Upload a photo &amp; select a style</span>
@@ -677,26 +677,39 @@
   </div>
 </footer>
 
-<!-- Replicate Token Modal -->
+<!-- Settings Modal -->
 <div id="token-modal" hidden>
-  <div class="modal-card">
-    <div class="modal-icon">🔑</div>
-    <h2 class="modal-title">Add Your Free Replicate Token</h2>
-    <p class="modal-desc">Replicate runs the face-preserving AI model. A free account gives you enough credits to generate headshots — no credit card required.</p>
+  <div class="modal-card" style="max-width:580px">
+    <div class="modal-icon">⚙️</div>
+    <h2 class="modal-title">One-Time Setup</h2>
+    <p class="modal-desc">Two free services power the face-preserving AI. Setup takes about 3 minutes.</p>
+
+    <p style="font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin-bottom:8px">Step 1 — Deploy the CORS Proxy (free, once)</p>
+    <div class="modal-steps">
+      1. Go to <a href="https://workers.cloudflare.com" target="_blank" rel="noopener">workers.cloudflare.com</a> → sign up free<br>
+      2. Click <strong>Create Worker</strong> → replace all code with the contents of
+         <a href="worker.js" target="_blank" rel="noopener"><strong>worker.js</strong></a> from this repo<br>
+      3. Click <strong>Deploy</strong> → copy the Worker URL shown (e.g. <code>https://…workers.dev</code>)
+    </div>
+    <div class="modal-input-row">
+      <input type="url" id="worker-url-input" placeholder="https://headshot-proxy.yourname.workers.dev" autocomplete="off" spellcheck="false">
+    </div>
+
+    <p style="font-size:.8125rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-secondary);margin:16px 0 8px">Step 2 — Add Replicate Token (free credits on signup)</p>
     <div class="modal-steps">
       1. Go to <a href="https://replicate.com/signin" target="_blank" rel="noopener">replicate.com</a> → sign up free<br>
-      2. Visit <a href="https://replicate.com/account/api-tokens" target="_blank" rel="noopener">replicate.com/account/api-tokens</a><br>
-      3. Click <strong>Create token</strong> → copy it → paste below
+      2. Go to <a href="https://replicate.com/account/api-tokens" target="_blank" rel="noopener">Account → API tokens</a> → Create token → copy it
     </div>
     <div class="modal-input-row">
       <input type="password" id="token-input" placeholder="r8_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
-      <button class="btn btn-primary" id="save-token-btn">Save</button>
     </div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost btn-sm" id="clear-token-btn">Remove saved token</button>
+
+    <div class="modal-actions" style="margin-top:20px">
+      <button class="btn btn-primary" id="save-token-btn">Save &amp; Close</button>
+      <button class="btn btn-ghost btn-sm" id="clear-token-btn">Clear saved settings</button>
       <button class="btn btn-ghost btn-sm" onclick="closeTokenModal()">Cancel</button>
     </div>
-    <p class="modal-note">Your token is stored in your browser only and sent directly to Replicate. It never touches our servers — this is a fully static app.</p>
+    <p class="modal-note">Both values are stored in your browser only. Nothing is sent to our servers — this app has no backend.</p>
   </div>
 </div>
 
@@ -710,9 +723,9 @@
 // =============================================
 // CONFIG
 // =============================================
-const REPLICATE_API   = 'https://api.replicate.com/v1/predictions';
-const REPLICATE_MODEL = 'timbrooks/instruct-pix2pix:30c1d0b916a6f8efce20493f5d61ee27491ab2a60437c13c588468b9810ec23d';
-const TOKEN_KEY       = 'replicate_token';
+const REPLICATE_VERSION = '30c1d0b916a6f8efce20493f5d61ee27491ab2a60437c13c588468b9810ec23d';
+const TOKEN_KEY         = 'replicate_token';
+const WORKER_KEY        = 'cf_worker_url';
 const MAX_HISTORY     = 10;
 const MAX_IMG_DIM     = 768;
 const JPEG_QUALITY    = 0.88;
@@ -946,53 +959,64 @@ function updateTransformBtn() {
 // =============================================
 // TOKEN MANAGEMENT
 // =============================================
-function getToken()    { return localStorage.getItem(TOKEN_KEY) || ''; }
-function saveToken(t)  { localStorage.setItem(TOKEN_KEY, t); }
-function clearToken()  { localStorage.removeItem(TOKEN_KEY); }
+function getToken()      { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveToken(t)    { localStorage.setItem(TOKEN_KEY, t); }
+function clearToken()    { localStorage.removeItem(TOKEN_KEY); }
+function getWorkerUrl()  { return localStorage.getItem(WORKER_KEY) || ''; }
+function saveWorkerUrl(u){ localStorage.setItem(WORKER_KEY, u.replace(/\/+$/, '')); }
+function clearWorkerUrl(){ localStorage.removeItem(WORKER_KEY); }
+function isReady()       { return !!(getToken() && getWorkerUrl()); }
 
 function openTokenModal() {
-  const existing = getToken();
-  if (existing) $id('token-input').value = existing;
+  const w = getWorkerUrl();
+  const t = getToken();
+  if (w) $id('worker-url-input').value = w;
+  if (t) $id('token-input').value = t;
   show($id('token-modal'));
-  setTimeout(() => $id('token-input').focus(), 80);
+  setTimeout(() => (w ? $id('token-input') : $id('worker-url-input')).focus(), 80);
 }
 function closeTokenModal() {
   hide($id('token-modal'));
+  $id('worker-url-input').value = '';
   $id('token-input').value = '';
 }
 
 function initTokenModal() {
   $id('save-token-btn').addEventListener('click', () => {
-    const val = $id('token-input').value.trim();
-    if (!val || val.length < 8) { showToast('Paste a valid Replicate token.', 'warning'); return; }
-    saveToken(val);
+    const workerUrl = $id('worker-url-input').value.trim();
+    const token     = $id('token-input').value.trim();
+    if (!workerUrl || !workerUrl.startsWith('http')) {
+      showToast('Enter your Cloudflare Worker URL (starts with https://).', 'warning'); return;
+    }
+    if (!token || token.length < 8) {
+      showToast('Enter your Replicate API token.', 'warning'); return;
+    }
+    saveWorkerUrl(workerUrl);
+    saveToken(token);
     updateModePill();
-    showToast('Token saved! You can now generate headshots.', 'success');
+    showToast('Settings saved! You\'re ready to generate headshots.', 'success');
     closeTokenModal();
   });
   $id('clear-token-btn').addEventListener('click', () => {
-    clearToken();
+    clearToken(); clearWorkerUrl();
     updateModePill();
-    showToast('Token removed.', 'info');
+    showToast('Settings cleared.', 'info');
     closeTokenModal();
   });
   $id('token-modal').addEventListener('click', e => { if (e.target === $id('token-modal')) closeTokenModal(); });
-  $id('token-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') $id('save-token-btn').click();
-    if (e.key === 'Escape') closeTokenModal();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTokenModal(); });
 }
 
 function updateModePill() {
-  const pill = $id('mode-pill-dynamic');
-  const hint = $id('transform-hint');
+  const pill    = $id('mode-pill-dynamic');
+  const hint    = $id('transform-hint');
   if (!pill) return;
-  const hasToken = !!getToken();
+  const ready    = isReady();
   const hasPhoto = !!state.compressedDataUrl;
-  const hasPreset = !!state.selectedPreset;
+  const hasPreset= !!state.selectedPreset;
 
-  if (!hasToken) {
-    pill.textContent = '🔑 Add free Replicate token to get started';
+  if (!ready) {
+    pill.textContent = '⚙️ Click "Settings" to complete one-time setup';
     pill.className = 'mode-pill needs-key';
   } else if (!hasPhoto) {
     pill.textContent = '🧬 Face-Preserving AI · Upload a photo';
@@ -1003,10 +1027,10 @@ function updateModePill() {
   }
 
   if (hint) {
-    if (!hasToken)        hint.textContent = 'Click "⚙ API Token" above to add your free Replicate token';
-    else if (!hasPhoto)   hint.textContent = 'Upload a photo first ↑';
-    else if (!hasPreset)  hint.textContent = 'Now select a style above';
-    else                  hint.textContent = `Style: "${PRESETS[hasPreset ? state.selectedPreset : '']?.name}" · Ready!`;
+    if (!ready)          hint.textContent = 'Click "⚙ Settings" above to complete one-time setup';
+    else if (!hasPhoto)  hint.textContent = 'Upload a photo first ↑';
+    else if (!hasPreset) hint.textContent = 'Now select a style above';
+    else                 hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}" · Ready!`;
   }
 }
 
@@ -1014,25 +1038,23 @@ function updateModePill() {
 // AI GENERATION — Replicate InstructPix2Pix
 // =============================================
 async function callReplicate(dataUrl, preset) {
-  const token = getToken();
-  if (!token) throw new Error('No Replicate token set.');
+  const token  = getToken();
+  const worker = getWorkerUrl();
+  if (!token || !worker) throw Object.assign(new Error('Setup not complete.'), { needsSetup: true });
 
   updateProgress(15, 'Submitting to Replicate…');
 
-  const createResp = await fetch(REPLICATE_API, {
+  const createResp = await fetch(`${worker}/v1/predictions`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      version: REPLICATE_MODEL.split(':')[1],
+      version: REPLICATE_VERSION,
       input: {
-        image: dataUrl,
-        prompt: preset.instruct,
-        num_inference_steps: 20,
+        image:                dataUrl,
+        prompt:               preset.instruct,
+        num_inference_steps:  20,
         image_guidance_scale: 1.5,
-        guidance_scale: 7.5,
+        guidance_scale:       7.5,
       },
     }),
   });
@@ -1040,7 +1062,7 @@ async function callReplicate(dataUrl, preset) {
   if (createResp.status === 401) {
     clearToken();
     updateModePill();
-    throw Object.assign(new Error('Invalid Replicate token. Please check and re-enter it.'), { needsToken: true });
+    throw Object.assign(new Error('Invalid Replicate token — please re-enter it in Settings.'), { needsSetup: true });
   }
   if (!createResp.ok) {
     const body = await createResp.json().catch(() => ({}));
@@ -1049,41 +1071,33 @@ async function callReplicate(dataUrl, preset) {
 
   const prediction = await createResp.json();
   updateProgress(25, 'Processing your photo…');
-
-  // Poll for completion
-  return pollPrediction(prediction.urls.get, token);
+  return pollPrediction(prediction.id, token, worker);
 }
 
-async function pollPrediction(pollUrl, token, attempt = 0) {
-  if (attempt > 60) throw new Error('Generation timed out. Please try again.');
-
+async function pollPrediction(predId, token, worker, attempt = 0) {
+  if (attempt > 80) throw new Error('Generation timed out. Please try again.');
   await sleep(attempt < 3 ? 1500 : 2500);
 
-  const resp = await fetch(pollUrl, {
+  const resp = await fetch(`${worker}/v1/predictions/${predId}`, {
     headers: { 'Authorization': `Bearer ${token}` },
   });
   if (!resp.ok) throw new Error(`Poll error (${resp.status})`);
 
   const data = await resp.json();
-
-  if (data.status === 'failed' || data.error) {
-    throw new Error(data.error || 'Generation failed on Replicate. Please try again.');
-  }
+  if (data.status === 'failed' || data.error) throw new Error(data.error || 'Generation failed. Please try again.');
 
   if (data.status === 'succeeded') {
     updateProgress(88, 'Finalizing your headshot…');
     const outputUrl = Array.isArray(data.output) ? data.output[0] : data.output;
-    if (!outputUrl) throw new Error('No image in response. Please try again.');
+    if (!outputUrl) throw new Error('No image returned. Please try again.');
     return outputUrl;
   }
 
-  // Still processing — update progress naturally
-  const pct = Math.min(85, 25 + attempt * 2);
-  const labels = ['Analyzing your face…', 'Preserving facial features…', 'Applying professional style…', 'Enhancing lighting…', 'Adding finishing touches…'];
+  const pct    = Math.min(85, 25 + attempt * 2);
+  const labels = ['Analyzing your face…', 'Preserving facial features…', 'Applying professional style…', 'Enhancing lighting…', 'Finishing touches…'];
   updateProgress(pct, labels[Math.min(attempt >> 2, labels.length - 1)]);
   setStepActive(attempt < 4 ? 1 : attempt < 10 ? 2 : 3);
-
-  return pollPrediction(pollUrl, token, attempt + 1);
+  return pollPrediction(predId, token, worker, attempt + 1);
 }
 
 // =============================================
@@ -1092,10 +1106,7 @@ async function pollPrediction(pollUrl, token, attempt = 0) {
 function initTransformBtn() {
   $id('transform-btn').addEventListener('click', () => {
     if (state.isGenerating) return;
-    if (!getToken()) {
-      openTokenModal();
-      return;
-    }
+    if (!isReady()) { openTokenModal(); return; }
     if (!state.compressedDataUrl) {
       showToast('Please upload a photo first!', 'warning');
       $id('upload-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1112,7 +1123,7 @@ function initTransformBtn() {
 }
 
 async function generateHeadshot() {
-  if (state.isGenerating || !state.selectedPreset || !state.compressedDataUrl || !getToken()) return;
+  if (state.isGenerating || !state.selectedPreset || !state.compressedDataUrl || !isReady()) return;
 
   state.isGenerating = true;
   const t0     = Date.now();
@@ -1134,7 +1145,7 @@ async function generateHeadshot() {
   } catch (err) {
     clearProgressTimers();
     handleError(err);
-    if (err.needsToken) setTimeout(() => openTokenModal(), 600);
+    if (err.needsSetup) setTimeout(() => openTokenModal(), 600);
   } finally {
     state.isGenerating = false;
   }
