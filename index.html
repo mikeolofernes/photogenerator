@@ -6,7 +6,7 @@
   <meta name="description" content="Transform any photo into a professional corporate headshot for free. AI-powered — no API key required." />
   <meta property="og:title" content="HeadshotAI — Free Professional Headshots" />
   <meta property="og:description" content="Generate professional LinkedIn, resume, and passport headshots free with AI." />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://image.pollinations.ai https://*.hf.space; connect-src 'self' https://image.pollinations.ai https://timbrooks-instruct-pix2pix.hf.space;" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.hf.space; connect-src 'self' https://timbrooks-instruct-pix2pix.hf.space;" />
   <title>HeadshotAI — Free Professional Headshots</title>
   <style>
     /* === CUSTOM PROPERTIES === */
@@ -364,7 +364,7 @@
       </p>
       <div class="hero-badges">
         <span class="free-badge"><span class="dot"></span>100% Free · No API Key Required</span>
-        <span class="free-badge" style="color:var(--accent-purple-light);background:var(--accent-purple-dim);border-color:rgba(124,58,237,.3)"><span class="dot" style="background:var(--accent-purple-light)"></span>Face-Preserving AI · Upload Your Photo</span>
+        <span class="free-badge" style="color:#4ade80;background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.25)"><span class="dot" style="background:#4ade80"></span>🧬 Face-Preserving AI · Your Face Stays You</span>
       </div>
       <div class="hero-cta-group">
         <a href="#upload-section" class="btn btn-primary btn-lg">✨ Generate Free Headshot</a>
@@ -412,17 +412,10 @@
       <div class="provider-info-row">
         <div class="provider-option">
           <div class="provider-option-header">
-            <span class="mode-pill face-preserve">🧬 Face-Preserving AI</span>
-            <strong>Upload a photo to use your actual face</strong>
+            <span class="mode-pill face-preserve">🧬 InstructPix2Pix · Face-Preserving</span>
+            <strong>Completely Free · No Account Needed</strong>
           </div>
-          <p>When you upload a photo, the app uses <strong>InstructPix2Pix</strong> — a free HuggingFace Space that performs image-to-image transformation, editing your attire and background while keeping your actual face intact. No API key needed.</p>
-        </div>
-        <div class="provider-option">
-          <div class="provider-option-header">
-            <span class="mode-pill pollinations">✨ Pollinations AI</span>
-            <strong>Fallback · No photo required</strong>
-          </div>
-          <p>If no photo is uploaded or the face-preserving AI is unavailable, <a href="https://pollinations.ai" target="_blank" rel="noopener" style="color:var(--accent-purple-light)">Pollinations AI</a> generates a sample professional headshot from your chosen style — still free, no key needed.</p>
+          <p>Your photo is sent to the <strong>timbrooks/instruct-pix2pix</strong> public HuggingFace Space. This model edits your actual photo — changing your attire and background based on an instruction like "wear a navy suit" — while preserving your face geometry and identity. No API key required.</p>
         </div>
       </div>
     </div>
@@ -519,8 +512,8 @@
     <div class="transform-area will-reveal">
       <button class="btn btn-primary btn-lg" id="transform-btn">✨ Generate Free Headshot</button>
       <div class="transform-mode-row">
-        <span class="mode-pill pollinations" id="mode-pill-dynamic">✨ Pollinations AI · Free · No Key Required</span>
-        <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Select a style to continue</span>
+        <span class="mode-pill face-preserve" id="mode-pill-dynamic">🧬 Face-Preserving AI · Upload a photo first</span>
+        <span id="transform-hint" style="font-size:.875rem;color:var(--text-muted)">Upload a photo &amp; select a style</span>
       </div>
     </div>
   </div>
@@ -603,7 +596,7 @@
     <div class="faq-list">
       <div class="faq-item">
         <button class="faq-question">Is this really free?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
-        <div class="faq-answer"><div class="faq-answer-inner">Yes, completely free. The default mode uses <a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a>, a free public API that requires no account or key. There are no hidden fees, subscriptions, or credit limits.</div></div>
+        <div class="faq-answer"><div class="faq-answer-inner">Yes, completely free. The app uses the public <a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix HuggingFace Space</a> — no account, no API key, no credit card required. There are no hidden fees or limits.</div></div>
       </div>
       <div class="faq-item">
         <button class="faq-question">How does it generate a headshot without my API key?<svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
@@ -653,15 +646,15 @@
       <div class="footer-col">
         <h4>Powered By</h4>
         <ul>
-          <li><a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a></li>
-          <li><a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace</a></li>
+          <li><a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix</a></li>
+          <li><a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace Spaces</a></li>
           <li><a href="https://github.com/mikeolofernes/photogenerator" target="_blank" rel="noopener">GitHub (source)</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© 2025 HeadshotAI. Open-source, forever free.</p>
-      <p>Default: <a href="https://pollinations.ai" target="_blank" rel="noopener">Pollinations AI</a> · Enhanced: <a href="https://huggingface.co" target="_blank" rel="noopener">HuggingFace</a></p>
+      <p>Powered by <a href="https://huggingface.co/timbrooks/instruct-pix2pix" target="_blank" rel="noopener">InstructPix2Pix</a> via HuggingFace Spaces</p>
     </div>
   </div>
 </footer>
@@ -676,47 +669,36 @@
 // =============================================
 // CONFIG
 // =============================================
-const POLLINATIONS_BASE = 'https://image.pollinations.ai/prompt';
-const SPACE_URL         = 'https://timbrooks-instruct-pix2pix.hf.space';
-const MAX_HISTORY       = 10;
-const MAX_IMG_DIM       = 1024;
-const JPEG_QUALITY      = 0.88;
-const THUMB_SIZE        = 240;
-const THUMB_QUALITY     = 0.72;
+const SPACE_URL     = 'https://timbrooks-instruct-pix2pix.hf.space';
+const MAX_HISTORY   = 10;
+const MAX_IMG_DIM   = 512;   // InstructPix2Pix is trained on 512×512
+const JPEG_QUALITY  = 0.88;
+const THUMB_SIZE    = 240;
+const THUMB_QUALITY = 0.72;
 
 // =============================================
-// PRESETS — optimized prompts for Pollinations FLUX
+// PRESETS
 // =============================================
 const PRESETS = {
   male_formal: {
     name: 'Male Formal Suit',
-    prompt: 'professional corporate headshot portrait of a man, navy blue business suit, crisp white dress shirt, silk tie, soft studio lighting, neutral light gray gradient background, sharp focus face, skin retouching, confident expression, photorealistic, 8K, LinkedIn photo',
-    hfInstruct: 'make this person wear a navy blue business suit with a crisp white dress shirt and silk tie, professional corporate headshot, studio lighting, neutral gray background',
-    negativePrompt: 'cartoon, anime, casual, t-shirt, outdoor, blurry, watermark, text, distorted face, multiple people',
+    instruct: 'make this person wear a navy blue business suit with a crisp white dress shirt and silk tie, professional corporate headshot, soft studio lighting, neutral gray background',
   },
   female_professional: {
     name: 'Female Professional',
-    prompt: 'professional corporate headshot portrait of a woman, elegant tailored black blazer, professional blouse, soft studio lighting, warm gradient background, sharp focus face, natural makeup, confident expression, photorealistic, 8K, LinkedIn photo',
-    hfInstruct: 'make this person wear an elegant tailored black blazer with a professional blouse, executive headshot, soft studio lighting, warm gradient background',
-    negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted face, multiple people',
+    instruct: 'make this person wear an elegant tailored black blazer with a professional blouse, executive corporate headshot, soft studio lighting, warm gradient background',
   },
   neutral_corporate: {
     name: 'Neutral Corporate',
-    prompt: 'professional corporate headshot portrait, dark gray business blazer, gender-neutral professional look, clean minimal studio lighting, soft white background, sharp focus face, natural expression, modern headshot, photorealistic, 8K',
-    hfInstruct: 'make this person wear a dark gray business blazer, professional corporate headshot, clean minimal studio lighting, soft white background',
-    negativePrompt: 'cartoon, anime, casual, outdoor, blurry, watermark, text, distorted, multiple people',
+    instruct: 'make this person wear a dark gray business blazer, professional corporate headshot, clean minimal studio lighting, soft white background',
   },
   passport: {
     name: 'Passport / ID',
-    prompt: 'official passport photo portrait, plain white background, person looking directly at camera, neutral expression, mouth closed, formal clothing at shoulders, even flat lighting, no shadows on background, centered, sharp focus, photorealistic, government ID style',
-    hfInstruct: 'change the background to plain white, make this person wear a plain formal shirt, neutral expression, flat even lighting, centered passport photo style',
-    negativePrompt: 'cartoon, anime, smile, looking away, colored background, shadows, sunglasses, hat, watermark, blurry, multiple people',
+    instruct: 'change the background to plain white, dress this person in a plain formal shirt, neutral expression, flat even lighting, centered passport photo style',
   },
   linkedin: {
     name: 'LinkedIn Optimized',
-    prompt: 'LinkedIn profile headshot portrait, professional business casual blazer, warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, face sharp, skin retouching, photorealistic, 8K, approachable professional',
-    hfInstruct: 'make this person wear a smart professional blazer, warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, LinkedIn headshot',
-    negativePrompt: 'cartoon, anime, casual t-shirt, busy background, watermark, text, blurry, distorted face, harsh shadows, multiple people',
+    instruct: 'make this person wear a smart professional blazer with a warm confident smile, soft natural studio lighting, blurred bokeh blue-gray background, LinkedIn profile headshot',
   },
 };
 
@@ -918,84 +900,112 @@ function updateTransformBtn() {
   const btn  = $id('transform-btn');
   const hint = $id('transform-hint');
   const pill = $id('mode-pill-dynamic');
-  if (!state.selectedPreset) {
-    btn.disabled = false;
-    hint.textContent = 'Select a style to continue';
+  const ready = state.compressedDataUrl && state.selectedPreset;
+
+  btn.disabled = false;
+  if (!state.compressedDataUrl) {
+    hint.textContent = 'Upload a photo first ↑';
+  } else if (!state.selectedPreset) {
+    hint.textContent = 'Now select a style above';
   } else {
-    btn.disabled = false;
-    hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}"`;
+    hint.textContent = `Style: "${PRESETS[state.selectedPreset].name}" · Ready!`;
   }
+
   if (pill) {
-    if (state.compressedDataUrl) {
-      pill.textContent = '🧬 Face-Preserving AI · Your photo will be used';
-      pill.className = 'mode-pill face-preserve';
-    } else {
-      pill.textContent = '✨ Pollinations AI · Free · No Key Required';
-      pill.className = 'mode-pill pollinations';
-    }
+    pill.textContent = state.compressedDataUrl
+      ? '🧬 Face-Preserving AI · Your face will be kept'
+      : '🧬 Face-Preserving AI · Upload a photo to begin';
+    pill.className = 'mode-pill face-preserve';
   }
 }
 
 // =============================================
-// AI GENERATION — GRADIO SPACE (face-preserving, free, no key)
+// AI GENERATION — InstructPix2Pix (face-preserving, free, no key)
 // =============================================
+
+// Compress a data URL to a smaller size specifically for the AI model
+function resizeDataUrl(dataUrl, maxDim = 512) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let { width, height } = img;
+      if (width > maxDim || height > maxDim) {
+        const r = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * r); height = Math.round(height * r);
+      }
+      const c = document.createElement('canvas');
+      c.width = width; c.height = height;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+      resolve(c.toDataURL('image/jpeg', 0.88));
+    };
+    img.onerror = () => resolve(dataUrl);
+    img.src = dataUrl;
+  });
+}
+
 async function uploadToSpace(dataUrl) {
-  const fetchResp = await fetch(dataUrl);
-  const blob = await fetchResp.blob();
+  const r = await fetch(dataUrl);
+  const blob = await r.blob();
   const form = new FormData();
   form.append('files', blob, 'photo.jpg');
   const up = await fetch(`${SPACE_URL}/upload`, { method: 'POST', body: form });
-  if (!up.ok) throw Object.assign(new Error('Upload failed'), { fallback: true });
+  if (!up.ok) throw new Error(`Upload failed (${up.status})`);
   const paths = await up.json();
-  if (!paths?.[0]) throw Object.assign(new Error('No upload path returned'), { fallback: true });
+  if (!paths?.[0]) throw new Error('No upload path returned');
   return paths[0];
 }
 
 async function callGradioSpace(dataUrl, preset, attempt = 0) {
-  updateProgress(12, 'Uploading photo to face-preserving AI…');
+  const seed = Math.floor(Math.random() * 99999);
+  const instruction = preset.instruct;
 
-  let filePath;
-  try {
-    filePath = await uploadToSpace(dataUrl);
-  } catch {
-    throw Object.assign(new Error('Could not reach face-preserving AI — falling back.'), { fallback: true });
-  }
-
-  updateProgress(28, 'Analyzing your facial features…');
-
-  const body = {
-    fn_index: 0,
-    data: [
-      { path: filePath, mime_type: 'image/jpeg', orig_name: 'photo.jpg', meta: { _type: 'gradio.FileData' } },
-      preset.hfInstruct,
-      20,
-      7.5,
-      1.5,
-      Math.floor(Math.random() * 99999),
-    ],
-  };
-
-  const resp = await fetch(`${SPACE_URL}/api/predict`, {
+  // Approach 1: pass base64 data URL directly (Gradio 3.x style)
+  updateProgress(15, 'Sending photo to AI…');
+  let resp = await fetch(`${SPACE_URL}/api/predict`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ fn_index: 0, data: [dataUrl, instruction, 20, 7.5, 1.5, seed] }),
   });
 
+  // Approach 2: file upload then predict (Gradio 4.x style)
+  if (resp.status === 422 || resp.status === 415 || resp.status === 400) {
+    updateProgress(20, 'Uploading photo…');
+    const filePath = await uploadToSpace(dataUrl);
+    updateProgress(30, 'Processing…');
+    resp = await fetch(`${SPACE_URL}/api/predict`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fn_index: 0,
+        data: [
+          { path: filePath, mime_type: 'image/jpeg', orig_name: 'photo.jpg', meta: { _type: 'gradio.FileData' } },
+          instruction, 20, 7.5, 1.5, seed,
+        ],
+      }),
+    });
+  }
+
+  // Space sleeping / overloaded — retry
   if (resp.status === 503 || resp.status === 500) {
-    if (attempt >= 2) throw Object.assign(new Error('Face-preserving AI is busy — falling back.'), { fallback: true });
-    updateProgress(null, `Waking AI model… attempt ${attempt + 1}/3`);
-    await sleep((attempt + 1) * 20000);
+    if (attempt >= 3) throw new Error('The AI model is taking too long to respond. Please try again in a minute.');
+    updateProgress(null, `AI model warming up… retry ${attempt + 1}/3`);
+    await sleep(15000);
     return callGradioSpace(dataUrl, preset, attempt + 1);
   }
 
-  if (!resp.ok) throw Object.assign(new Error(`Space error (${resp.status}) — falling back.`), { fallback: true });
+  if (!resp.ok) {
+    const body = await resp.text().catch(() => '');
+    throw new Error(`AI error (${resp.status}). ${body ? body.slice(0, 120) : 'Please try again.'}`);
+  }
 
   const result = await resp.json();
-  if (result.error) throw Object.assign(new Error(result.error), { fallback: true });
+  if (result.error) throw new Error(result.error);
 
-  updateProgress(82, 'Finalizing your headshot…');
+  updateProgress(85, 'Finalizing your headshot…');
   const out = result.data?.[0];
-  if (!out) throw Object.assign(new Error('No output from AI — falling back.'), { fallback: true });
+  if (!out) throw new Error('AI returned no image. Please try again.');
 
   return resolveGradioOutput(out);
 }
@@ -1005,7 +1015,7 @@ async function resolveGradioOutput(output) {
     if (output.startsWith('data:')) return output;
     const url = output.startsWith('/') ? `${SPACE_URL}${output}` : output;
     const r = await fetch(url);
-    if (!r.ok) throw Object.assign(new Error('Could not fetch result image'), { fallback: true });
+    if (!r.ok) throw new Error('Could not retrieve the generated image.');
     return URL.createObjectURL(await r.blob());
   }
   if (output && typeof output === 'object') {
@@ -1014,35 +1024,11 @@ async function resolveGradioOutput(output) {
     if (raw) {
       const url = raw.startsWith('/') ? `${SPACE_URL}${raw}` : raw;
       const r = await fetch(url);
-      if (!r.ok) throw Object.assign(new Error('Could not fetch result image'), { fallback: true });
+      if (!r.ok) throw new Error('Could not retrieve the generated image.');
       return URL.createObjectURL(await r.blob());
     }
   }
-  throw Object.assign(new Error('Unexpected AI response format — falling back.'), { fallback: true });
-}
-
-// =============================================
-// AI GENERATION — POLLINATIONS (free, no key, fallback)
-// =============================================
-async function callPollinations(preset) {
-  const seed   = Math.floor(Math.random() * 999999);
-  const params = new URLSearchParams({
-    width: 1024, height: 1024,
-    model: 'flux',
-    seed,
-    nologo: true,
-    enhance: false,
-  });
-  const url = `${POLLINATIONS_BASE}/${encodeURIComponent(preset.prompt)}?${params}`;
-
-  updateProgress(20, 'Sending request to Pollinations AI…');
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Pollinations error (${resp.status})`);
-
-  updateProgress(75, 'Downloading generated image…');
-  const blob = await resp.blob();
-  if (!blob.type.startsWith('image/')) throw new Error('Unexpected response — try again.');
-  return URL.createObjectURL(blob);
+  throw new Error('Unexpected response format from AI. Please try again.');
 }
 
 // =============================================
@@ -1051,8 +1037,13 @@ async function callPollinations(preset) {
 function initTransformBtn() {
   $id('transform-btn').addEventListener('click', () => {
     if (state.isGenerating) return;
+    if (!state.compressedDataUrl) {
+      showToast('Please upload a photo first — your face needs to be in the photo!', 'warning');
+      $id('upload-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     if (!state.selectedPreset) {
-      showToast('Please select a style first.', 'warning');
+      showToast('Please select a style preset first.', 'warning');
       $id('presets-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
@@ -1062,7 +1053,7 @@ function initTransformBtn() {
 }
 
 async function generateHeadshot() {
-  if (state.isGenerating || !state.selectedPreset) return;
+  if (state.isGenerating || !state.selectedPreset || !state.compressedDataUrl) return;
 
   state.isGenerating = true;
   const t0     = Date.now();
@@ -1073,33 +1064,16 @@ async function generateHeadshot() {
   hide($id('result-display'));
   show($id('loading-state'));
   $id('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  startFakeProgress();
 
   try {
-    let outputUrl, provider;
-
-    if (state.compressedDataUrl) {
-      startFakeProgress('space');
-      try {
-        outputUrl = await callGradioSpace(state.compressedDataUrl, preset);
-        provider = 'face-preserve';
-      } catch (err) {
-        if (!err.fallback) throw err;
-        showToast('Face-preserving AI unavailable — using Pollinations instead…', 'warning', 6000);
-        clearProgressTimers();
-        startFakeProgress('pollinations');
-        outputUrl = await callPollinations(preset);
-        provider = 'pollinations';
-      }
-    } else {
-      startFakeProgress('pollinations');
-      outputUrl = await callPollinations(preset);
-      provider = 'pollinations';
-    }
-
+    // Resize to 512px for InstructPix2Pix
+    const aiDataUrl = await resizeDataUrl(state.compressedDataUrl, 512);
+    const outputUrl = await callGradioSpace(aiDataUrl, preset);
     clearProgressTimers();
     updateProgress(100, 'Complete! ✨');
     await sleep(300);
-    await handleSuccess(outputUrl, Date.now() - t0, provider);
+    await handleSuccess(outputUrl, Date.now() - t0);
   } catch (err) {
     clearProgressTimers();
     handleError(err);
@@ -1111,26 +1085,18 @@ async function generateHeadshot() {
 // =============================================
 // LOADING UI
 // =============================================
-const MILESTONES = {
-  space: [
-    { pct: 15, label: 'Analyzing your photo…',             delay: 800,   step: 1 },
-    { pct: 40, label: 'Preserving your facial features…',  delay: 5000,  step: 2 },
-    { pct: 65, label: 'Applying professional style…',      delay: 15000, step: 2 },
-    { pct: 80, label: 'Enhancing lighting & background…',  delay: 30000, step: 3 },
-    { pct: 90, label: 'Finishing touches…',                delay: 50000, step: 3 },
-  ],
-  pollinations: [
-    { pct: 10, label: 'Composing professional prompt…',    delay: 600,   step: 1 },
-    { pct: 35, label: 'FLUX is rendering your headshot…',  delay: 3000,  step: 2 },
-    { pct: 65, label: 'Applying style and lighting…',      delay: 7000,  step: 2 },
-    { pct: 85, label: 'Polishing final details…',          delay: 11000, step: 3 },
-  ],
-};
+const MILESTONES = [
+  { pct: 15, label: 'Analyzing your photo…',            delay: 800,   step: 1 },
+  { pct: 40, label: 'Preserving your facial features…', delay: 5000,  step: 2 },
+  { pct: 65, label: 'Applying professional style…',     delay: 15000, step: 2 },
+  { pct: 80, label: 'Enhancing lighting & background…', delay: 30000, step: 3 },
+  { pct: 90, label: 'Finishing touches…',               delay: 55000, step: 3 },
+];
 
-function startFakeProgress(mode = 'pollinations') {
+function startFakeProgress() {
   updateProgress(3, 'Starting…');
   setStepActive(null);
-  (MILESTONES[mode] || MILESTONES.pollinations).forEach(({ pct, label, delay, step }) => {
+  MILESTONES.forEach(({ pct, label, delay, step }) => {
     const t = setTimeout(() => { updateProgress(pct, label); setStepActive(step); }, delay);
     state.progressTimers.push(t);
   });
@@ -1159,12 +1125,11 @@ function setStepActive(active) {
 // =============================================
 // RESULT HANDLING
 // =============================================
-async function handleSuccess(outputUrl, elapsed, provider) {
+async function handleSuccess(outputUrl, elapsed) {
   hide($id('loading-state'));
   hide($id('error-state'));
 
-  const beforeSrc = state.compressedDataUrl || '';
-  $id('before-img').src = beforeSrc;
+  $id('before-img').src = state.compressedDataUrl;
   $id('after-img').src  = outputUrl;
 
   await new Promise(resolve => {
@@ -1175,26 +1140,14 @@ async function handleSuccess(outputUrl, elapsed, provider) {
 
   $id('slider-range').value = 50;
   updateSlider(50);
-
-  if (!beforeSrc) {
-    $id('slider-handle').style.display = 'none';
-    $id('slider-range').style.display  = 'none';
-    $qsa('.slider-label').forEach(l => l.style.display = 'none');
-    updateSlider(100);
-  }
-
   show($id('result-display'));
 
-  const secs          = (elapsed / 1000).toFixed(1);
-  const providerLabel = provider === 'face-preserve' ? 'Face-Preserving AI' : 'Pollinations AI';
-  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · ${providerLabel} · ${secs}s`;
+  const secs = (elapsed / 1000).toFixed(1);
+  $id('result-meta').textContent = `Style: ${PRESETS[state.selectedPreset].name} · Face-Preserving AI · ${secs}s`;
 
-  await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed, provider });
+  await saveToHistory({ preset: state.selectedPreset, outputUrl, elapsed });
   renderHistory(loadHistory());
-  const msg = provider === 'face-preserve'
-    ? 'Done! Your face was preserved. Drag the slider to compare.'
-    : (beforeSrc ? 'Done! Drag the slider to compare.' : 'Headshot generated!');
-  showToast(msg, 'success');
+  showToast('Done! Your face was preserved. Drag the slider to compare.', 'success');
 }
 
 function handleError(err) {
